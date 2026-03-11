@@ -91,9 +91,10 @@ function drawMoves(){
     let html="";
     html+=drawStanding();
     html+=drawCategory("Special", moves.special, 2);
+    html+=`<div class="category"><h3>派生</h3><div id="followupsText">派生技なし</div></div>`;
     html+=drawCategory("特殊技", moves.unique);
-    html+=drawCategory("通常投げ", moves.throw);
     html+=drawCategory("共通システム", moves.system);
+    html+=drawCategory("通常投げ", moves.throw);
     html+=drawCategory("SA", moves.sa);
     document.getElementById("moves").innerHTML=html;
 }
