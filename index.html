@@ -12,7 +12,12 @@
     <div class="header-controls">
         <div class="theme-select">
             <button onclick="setTheme('dark')">Dark</button>
+            <button onclick="setTheme('blue')">Blue</button>
             <button onclick="setTheme('purple')">Purple</button>
+            <button onclick="setTheme('green')">Green</button>
+            <button onclick="setTheme('pink')">Pink</button>
+            <button onclick="setTheme('orange')">Orange</button>
+            <button onclick="setTheme('cyan')">Cyan</button>
         </div>
         <select onchange="location.href=this.value">
             <option value="index.html" selected>コンボ作成</option>
@@ -30,12 +35,12 @@
         <div id="combo" class="combo-display"></div>
         <div class="main-controls">
             <button id="odSwitcher" class="btn-od-toggle" onclick="toggleOD()">ODモード</button>
-            <button class="btn-undo" onclick="undo()">1手戻る(Undo)</button>
-            <button class="btn-clear" onclick="clearCombo()">全消去</button>
+            <button class="btn-undo" onclick="undo()">Undo</button>
+            <button class="btn-clear" onclick="clearCombo()">Clear</button>
         </div>
         <div class="save-area">
             <input type="text" id="comboName" placeholder="コンボ名">
-            <button class="btn-save" onclick="saveComboRoute()">詳細保存</button>
+            <button class="btn-save" onclick="saveComboRoute()">保存</button>
         </div>
     </section>
     <section id="moves" class="moves-section"></section>
