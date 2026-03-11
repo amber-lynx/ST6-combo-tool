@@ -1,10 +1,11 @@
 .standingGrid{
     display:grid;
     grid-template-columns: repeat(3, auto);
+    grid-template-rows: repeat(3, auto);
     gap:8px;
 }
 .standingBtn img{
-    width:60px;
+    width:60px;   /* アイコンサイズを変更する場所 */
     height:60px;
 }
 .gridCols2{
