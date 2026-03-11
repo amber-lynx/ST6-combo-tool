@@ -1,4 +1,5 @@
 /* --- 変数と基本設定（テーマ追加版） --- */
+/* 全テーマの色定義：背景、カード、アクセント（光る色）を一括管理 */
 .theme-dark   { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; }
 .theme-blue   { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; }
 .theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; --text: #ffffff; }
@@ -7,15 +8,36 @@
 .theme-orange { --bg: #1a100b; --card: #2e1f1b; --accent: #f9bd93; --text: #ffffff; }
 .theme-cyan   { --bg: #0b1a1a; --card: #1b2e2e; --accent: #93f9f9; --text: #ffffff; }
 
+/* 全体への適用 */
 body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Helvetica Neue', Arial, sans-serif;
     padding: 20px;
-    transition: 0.3s;
+    transition: background 0.3s ease, color 0.3s ease;
     line-height: 1.4;
 }
 
+/* ボタンやコンボ表示、カード類をテーマのカード色と同期させる */
+.standingBtn, 
+.combo-display, 
+.combo-card, 
+.move-grid button, 
+button {
+    background: var(--card);
+    transition: background 0.3s ease;
+}
+
+/* コンボの文字や矢印、ゲージバッジをテーマのアクセント色と同期させる */
+.combo-unit, 
+.gauge-badge, 
+.combo-unit .arrow {
+    color: var(--accent);
+}
+
+.gauge-badge {
+    border-color: var(--accent);
+}
 /* --- ヘッダー --- */
 header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
 .header-controls { display: flex; gap: 10px; align-items: center; }
