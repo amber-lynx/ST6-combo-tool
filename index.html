@@ -1,28 +1,63 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
-<title>スト6 コンボメーカー（キンバリー）</title>
+<title>Kimberly Combo Tool</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<button onclick="openEditPage()">編集・削除ページを開く</button>
-  
-<h1>スト6 コンボメーカー（キンバリー）</h1>
+<h1>Kimberly Combo Tool</h1>
+
+<!-- ページ切替プルダウン -->
+<div class="pageSelect">
+    <label>ページ切替：
+        <select id="pageSelector" onchange="switchPage()">
+            <option value="index.html" selected>コンボ作成</option>
+            <option value="edit.html">編集・削除</option>
+        </select>
+    </label>
+</div>
+
+<div class="panel">
+    <input type="text" id="comboName" placeholder="コンボ名を入力">
+    <button onclick="saveComboRoute()">登録</button>
+    <button onclick="clearCombo()">CLEAR</button>
+</div>
 
 <div id="combo" class="comboLine"></div>
 
-<button onclick="clearCombo()">クリア</button>
-
-<h2>技一覧</h2>
 <div id="moves"></div>
 
-<h2>派生</h2>
-<div id="followups"></div>
+<div class="category">
+    <h3>派生</h3>
+    <div id="followupsText">派生技なし</div>
+</div>
 
 <script src="app.js"></script>
+
+<script>
+// プルダウン切替
+function switchPage(){
+    const sel = document.getElementById("pageSelector");
+    window.location.href = sel.value;
+}
+
+// 編集用データ読み込み
+window.addEventListener("load", function(){
+    const editData = JSON.parse(localStorage.getItem("editCombo") || "null");
+    if(editData){
+        document.getElementById("comboName").value = editData.route.name;
+        combo = editData.route.route.map(name => ({name:name}));
+        update();
+        document.getElementById("followupsText").innerText = "派生技なし";
+        // 上書き保存用に index を保持
+        localStorage.setItem("editIndex", editData.index);
+        localStorage.removeItem("editCombo");
+    }
+});
+</script>
+
 </body>
 </html>
