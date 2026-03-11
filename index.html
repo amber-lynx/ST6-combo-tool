@@ -1,142 +1,53 @@
-let combo = [];
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kimberly Combo Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const iconMap = {
-    "弱P": "icons/LP.png", "中P": "icons/MP.png", "強P": "icons/HP.png",
-    "弱K": "icons/LK.png", "中K": "icons/MK.png", "強K": "icons/HK.png"
-};
-
-const moves = {
-    standing: [
-        { name: "弱P", num: 7 }, { name: "中P", num: 8 }, { name: "強P", num: 9 },
-        { name: "弱K", num: 4 }, { name: "中K", num: 5 }, { name: "強K", num: 6 },
-    ],
-    special: [
-        { name: "武神旋風脚", cmd: "214K" },
-        { name: "流転一文字", cmd: "236P" },
-        { name: "彩隠形", cmd: "214P" },
-        { 
-            name: "疾駆け", cmd: "214K", 
-            followups: [
-                { name: "急停止", cmd: "P" },
-                { name: "胴刎ね", cmd: "K" },
-                { name: "影すくい", cmd: "2K" },
-                { name: "首狩り", cmd: "6K" },
-                { 
-                    name: "弧空", cmd: "8",
-                    followups: [
-                        { name: "武神イズナ落とし", cmd: "P" },
-                        { name: "武神鉾刃脚", cmd: "K" }
-                    ]
-                }
-            ]
-        },
-        { name: "細工手裏剣", cmd: "22P" }
-    ],
-    unique: [
-        { name: "水切り蹴り", cmd: "3中K" },
-        { name: "風車", cmd: "4強K" },
-        { name: "飛箭蹴", cmd: "6強K" },
-        { name: "武神虎連牙", cmd: "MP>HP" },
-        { name: "武神天架拳", cmd: "LP>MP>HP>HK" }
-    ],
-    sa: [
-        { name: "SA1 武神乱拍手", cmd: "236236K" },
-        { name: "SA2 武神天翔亢竜", cmd: "214214P" },
-        { name: "SA3 武神顕現神楽", cmd: "236236P" }
-    ]
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    drawMoves();
-});
-
-function getIcon(name) {
-    for (let key in iconMap) {
-        if (name.includes(key)) return iconMap[key];
-    }
-    return "";
-}
-
-function drawMoves() {
-    const container = document.getElementById("moves");
-    if (!container) return;
-
-    let html = "";
-    // 通常技
-    html += `<div class="category"><h3>Normal</h3><div class="standingGrid">`;
-    moves.standing.forEach(m => {
-        html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
-            <img src="${getIcon(m.name)}" onerror="this.style.display='none'">
-            <span>${m.name}</span>
-        </button>`;
-    });
-    html += `</div></div>`;
-
-    // 必殺技・特殊技・SA
-    html += drawSection("Special", moves.special);
-    html += `<div class="category"><h3>Followup (派生)</h3><div id="followupList" class="followup-grid">選択可能な派生なし</div></div>`;
-    html += drawSection("Unique", moves.unique);
-    html += drawSection("SA", moves.sa);
+<header>
+    <h1>Kimberly Combo Tool</h1>
     
-    container.innerHTML = html;
-}
+    <!-- ページ切替 -->
+    <div class="pageSelect">
+        <label>モード：
+            <select id="pageSelector" onchange="location.href=this.value">
+                <option value="index.html" selected>コンボ作成</option>
+                <option value="edit.html">編集・削除</option>
+            </select>
+        </label>
+    </div>
+</header>
 
-function drawSection(title, list) {
-    let html = `<div class="category"><h3>${title}</h3><div class="move-grid">`;
-    list.forEach(m => {
-        html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name} <small>${m.cmd || ''}</small></button>`;
-    });
-    html += `</div></div>`;
-    return html;
-}
+<main class="container">
+    <!-- コンボ表示・操作エリア -->
+    <section class="combo-section">
+        <div id="combo" class="combo-display">
+            <span class="placeholder">技を選択してコンボを作成...</span>
+        </div>
+        
+        <div class="combo-controls">
+            <button class="btn-undo" onclick="undo()">1手戻る</button>
+            <button class="btn-clear" onclick="clearCombo()">全消去</button>
+        </div>
 
-function addMove(m) {
-    combo.push(m);
-    updateComboDisplay();
-    
-    const followupContainer = document.getElementById("followupList");
-    if (m.followups) {
-        followupContainer.innerHTML = m.followups.map(f => 
-            `<button class="followup-btn" onclick='addMove(${JSON.stringify(f)})'>${f.name} <small>${f.cmd || ''}</small></button>`
-        ).join("");
-    } else {
-        followupContainer.innerHTML = "選択可能な派生なし";
-    }
-}
+        <div class="save-area">
+            <input type="text" id="comboName" placeholder="コンボ名（例：画面端 投げ始動）">
+            <button class="btn-save" onclick="saveComboRoute()">保存する</button>
+        </div>
+    </section>
 
-function updateComboDisplay() {
-    const container = document.getElementById("combo");
-    container.innerHTML = combo.map((m, i) => `
-        <span class="combo-unit">
-            <span class="combo-name">${m.name}</span>
-            ${i < combo.length - 1 ? '<span class="arrow">→</span>' : ''}
-        </span>
-    `).join("");
-}
+    <!-- 技選択エリア -->
+    <section id="moves" class="moves-section">
+        <!-- ここにapp.jsからボタンが生成されます -->
+        <p class="loading">読み込み中...</p>
+    </section>
+</main>
 
-function undo() {
-    combo.pop();
-    updateComboDisplay();
-}
+<script src="app.js"></script>
 
-function clearCombo() {
-    combo = [];
-    updateComboDisplay();
-    document.getElementById("followupList").innerHTML = "選択可能な派生なし";
-}
-
-function saveComboRoute() {
-    const name = document.getElementById("comboName").value.trim();
-    if (!name || combo.length === 0) return alert("名前と内容を入力してください");
-
-    const saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    saved.push({
-        id: Date.now(),
-        name: name,
-        route: combo.map(c => c.name)
-    });
-    localStorage.setItem("comboRoutes", JSON.stringify(saved));
-    alert("保存完了！");
-    clearCombo();
-    document.getElementById("comboName").value = "";
-}
+</body>
+</html>
