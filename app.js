@@ -1,5 +1,4 @@
 let combo = [];
-let totalDamage = 0;
 
 const iconMap = {
     "弱P":"icons/LP.png",
@@ -17,39 +16,72 @@ function getIcon(name){
     return "";
 }
 
-// 技データ
 const moves = {
     standing:[
-        {name:"弱P", damage:300},{name:"中P", damage:600},{name:"強P", damage:900},
-        {name:"弱K", damage:300},{name:"中K", damage:700},{name:"強K", damage:900}
+        {name:"弱P", num:7},{name:"中P", num:8},{name:"強P", num:9},
+        {name:"弱K", num:4},{name:"中K", num:5},{name:"強K", num:6},
+        {name:"前J", num:1},{name:"前J中P", num:2},{name:"前J中K", num:3}
     ],
     special:[
-        {name:"武神旋風脚", cmd:"214K", damage:1200},
-        {name:"武神旋風脚（OD）", cmd:"214KK", damage:1500},
-        {name:"疾駆け", cmd:"214K", damage:800, followups:[
-            {name:"急停止", cmd:"P", damage:0},
-            {name:"胴刎ね", cmd:"弱K", damage:900},
-            {name:"影すくい", cmd:"中K", damage:1000},
-            {name:"首狩り", cmd:"強K", damage:1100},
+        {name:"武神旋風脚", cmd:"214K"},
+        {name:"武神旋風脚（OD）", cmd:"214KK"},
+        {name:"空中武神旋風脚（前J）", cmd:"214K"},
+        {name:"空中武神旋風脚（OD）（前J）", cmd:"214KK"},
+        {name:"流転一文字", cmd:"236P"},
+        {name:"流転一文字（OD）", cmd:"236PP"},
+        {name:"彩隠形", cmd:"214P"},
+        {name:"彩隠形（OD）", cmd:"214PP"},
+        {name:"荒鵺捻り（前J）", cmd:"236P"},
+        {name:"荒鵺捻り（OD）（前J）", cmd:"236PP"},
+        {name:"疾駆け", cmd:"214K", followups:[
+            {name:"急停止", cmd:"P"},
+            {name:"胴刎ね", cmd:"弱K"},
+            {name:"影すくい", cmd:"中K"},
+            {name:"首狩り", cmd:"強K"},
             {name:"弧空", followups:[
-                {name:"武神イズナ落とし", cmd:"P", damage:1600},
-                {name:"武神鉾刃脚", cmd:"K", damage:1400}
+                {name:"武神イズナ落とし", cmd:"P"},
+                {name:"武神鉾刃脚", cmd:"K"}
             ]}
+        ]},
+        {name:"疾駆け（OD）", cmd:"214KK", followups:[
+            {name:"急停止", cmd:"P"},
+            {name:"胴刎ね", cmd:"弱K"},
+            {name:"影すくい", cmd:"中K"},
+            {name:"首狩り", cmd:"強K"},
+            {name:"弧空", followups:[
+                {name:"武神イズナ落とし", cmd:"P"},
+                {name:"武神鉾刃脚", cmd:"K"}
+            ]}
+        ]},
+        {name:"召雷細工", followups:[
+            {name:"細工手裏剣", cmd:"↓↓P"},
+            {name:"乱れ細工手裏剣", cmd:"↓↓PP"}
         ]}
     ],
     unique:[
-        {name:"水切り蹴り", cmd:"3中K", damage:500},
-        {name:"風車", cmd:"4強K", damage:700}
-    ],
-    system:[
-        {name:"ドライブインパクト", cmd:"強P強K", damage:600},
-        {name:"ドライブリバーサル", cmd:"強P強K", damage:800}
+        {name:"水切り蹴り", cmd:"3中K"},
+        {name:"風車", cmd:"4強K"},
+        {name:"飛箭蹴", cmd:"6強K", followups:[{name:"↖"},{name:"↑"},{name:"↗"}]},
+        {name:"肘落とし（前J）", cmd:"2中P"},
+        {name:"武神虎連牙", cmd:"中P＞強P"},
+        {name:"武神天架拳", cmd:"弱P＞中P＞強P＞強K"},
+        {name:"武神獄鎖拳", cmd:"弱P＞中P＞2強P＞強K"},
+        {name:"武神獄鎖投げ", cmd:"弱P＞中P＞2強P＞2強K"}
     ],
     throw:[
-        {name:"縄掛背負い", cmd:"6弱P弱K", damage:1000}
+        {name:"縄掛背負い", cmd:"6弱P弱K"},
+        {name:"鍾打巴", cmd:"4弱P弱K"}
+    ],
+    system:[
+        {name:"ドライブインパクト", cmd:"強P強K"},
+        {name:"ドライブリバーサル", cmd:"強P強K"},
+        {name:"パリィ", cmd:"中P中K"},
+        {name:"ドライブラッシュ", cmd:"66"}
     ],
     sa:[
-        {name:"武神乱拍手 SA1", cmd:"236236K", damage:2000}
+        {name:"武神乱拍手 SA1", cmd:"236236K"},
+        {name:"武神天翔亢竜 SA2", cmd:"214214P"},
+        {name:"武神顕現神楽 SA3", cmd:"236236P"}
     ]
 };
 
@@ -71,9 +103,9 @@ function drawStanding(){
     moves.standing.forEach(m=>{
         let icon = getIcon(m.name);
         html+=`
-        <button class="standingBtn" draggable="true" ondragstart="drag(event)" onclick='addMove(${JSON.stringify(m)})'>
+        <button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
             <img src="${icon}">
-            <span>${m.name}</span>
+            <span>${m.name}${m.num?`【${m.num}】`:""}</span>
         </button>`;
     });
     html+=`</div></div>`;
@@ -92,7 +124,6 @@ function drawCategory(title, list, cols=1){
 
 function addMove(m){
     combo.push(m);
-    totalDamage += m.damage||0;
     update();
     if(m.followups){
         showFollow(m.followups);
@@ -118,28 +149,12 @@ function update(){
         if(i<combo.length-1) html+=`<span class="arrow">→</span>`;
     });
     document.getElementById("combo").innerHTML=html;
-    document.getElementById("totalDamage").innerText = `ダメージ合計: ${totalDamage}`;
 }
 
 function clearCombo(){
     combo=[];
-    totalDamage = 0;
     update();
     document.getElementById("followupsText").innerText="派生技なし";
-}
-
-// ドラッグ&ドロップ
-let draggedIndex;
-function drag(ev){ draggedIndex = Array.from(ev.target.parentNode.children).indexOf(ev.target); }
-function allowDrop(ev){ ev.preventDefault(); }
-function drop(ev){
-    ev.preventDefault();
-    const dropIndex = Array.from(ev.target.parentNode.children).indexOf(ev.target);
-    if(draggedIndex === dropIndex) return;
-    const temp = combo[draggedIndex];
-    combo.splice(draggedIndex, 1);
-    combo.splice(dropIndex, 0, temp);
-    update();
 }
 
 function saveComboRoute(){
