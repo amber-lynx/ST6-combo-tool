@@ -1,7 +1,11 @@
-/* --- 変数と基本設定 --- */
-.theme-dark { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; }
+/* --- 変数と基本設定（テーマ追加版） --- */
+.theme-dark   { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; }
+.theme-blue   { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; }
 .theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; --text: #ffffff; }
-.theme-blue { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; }
+.theme-green  { --bg: #0b1a0e; --card: #1b2e1f; --accent: #93f9bd; --text: #ffffff; }
+.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; }
+.theme-orange { --bg: #1a100b; --card: #2e1f1b; --accent: #f9bd93; --text: #ffffff; }
+.theme-cyan   { --bg: #0b1a1a; --card: #1b2e2e; --accent: #93f9f9; --text: #ffffff; }
 
 body {
     background: var(--bg);
