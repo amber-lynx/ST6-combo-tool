@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SF6 Combo Tool</title>
 
+<style>
+body{
+background:#0e1117;
+color:white;
+font-family:sans-serif;
+text-align:center;
+padding:40px;
+}
+
+button{
+padding:10px 20px;
+margin:5px;
+font-size:18px;
+}
+
+#combo{
+margin-top:30px;
+font-size:22px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>SF6 Combo Tool</h1>
+
+<button onclick="add('しゃがみ強P')">しゃがみ強P</button>
+<button onclick="add('流転')">流転</button>
+<button onclick="add('疾駆け')">疾駆け</button>
+<button onclick="add('影すくい')">影すくい</button>
+
+<div id="combo"></div>
+
+<script>
+
+let combo=[]
+
+function add(move){
+combo.push(move)
+document.getElementById("combo").innerHTML=combo.join(" → ")
+}
+
+</script>
+
+</body>
+</html>
