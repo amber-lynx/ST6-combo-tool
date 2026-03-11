@@ -21,3 +21,34 @@
     margin:0 4px;
     opacity:0.6;
 }
+
+body{
+    background:#0e1117;
+    color:white;
+    font-family:sans-serif;
+    padding:20px;}
+
+body.dark{
+    background:#f4f4f4;
+          color:#111;}
+
+.standingGrid{
+    display:grid;
+    grid-template-columns: repeat(3, auto);
+    grid-template-rows: repeat(2, auto);
+    gap:8px;}
+
+.standingBtn img{
+    width:60px;
+    height:60px;} /* ここでアイコンサイズ変更 */
+
+.gridCols2{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:6px;}
+
+.comboMove{font-size:20px;
+           margin:0 4px;}
+
+.arrow{margin:0 4px;
+       opacity:0.6;}
