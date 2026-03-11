@@ -1,14 +1,18 @@
-// 編集・削除用JS
+// 編集・削除用スクリプト
 function drawSavedRoutes(){
     let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
     let html = "";
-    saved.forEach((s, index) => {
-        html += `<div style="margin-bottom:8px;">
-            <b>${index+1}. ${s.name}</b> : ${s.route.join(" → ")}
-            <button onclick="editRoute(${index})">編集</button>
-            <button onclick="deleteRoute(${index})">削除</button>
-        </div>`;
-    });
+    if(saved.length === 0){
+        html = "<p>登録されたコンボはありません</p>";
+    } else {
+        saved.forEach((s, index) => {
+            html += `<div style="margin-bottom:8px; padding:6px; border:1px solid #444; border-radius:6px;">
+                <b>${index+1}. ${s.name}</b> : ${s.route.join(" → ")}
+                <button onclick="editRoute(${index})">編集</button>
+                <button onclick="deleteRoute(${index})">削除</button>
+            </div>`;
+        });
+    }
     document.getElementById("savedRoutes").innerHTML = html;
 }
 
@@ -25,10 +29,14 @@ function deleteRoute(index){
 // 編集
 function editRoute(index){
     let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    let route = saved[index];
-    // メインページに渡すためlocalStorageに格納
+    const route = saved[index];
+
+    // 編集対象データを localStorage に格納
     localStorage.setItem("editCombo", JSON.stringify({index:index, route:route}));
-    alert("メインページに戻ってコンボを編集してください。\nコンボを開いたらクリアせずに編集して登録してください。");
+
+    // index.html に遷移して編集モード
+    window.location.href = "index.html";
 }
 
+// 初期描画
 drawSavedRoutes();
