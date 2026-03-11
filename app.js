@@ -17,7 +17,7 @@ const moves = {
         { name: "屈弱K", cmd: "2LK", dmg: 300 }, { name: "屈中K", cmd: "2MK", dmg: 700 }, { name: "屈強K", cmd: "2HK", dmg: 900 },
     ],
     // 指定の順番で配置
-    special: [
+     special: [
         { name: "武神旋風脚", cmd: "214K", odCmd: "214KK", hasOD: true, dmg: 1000, odDmg: 1200 },
         { name: "空中武神旋風脚", cmd: "j214K", odCmd: "j214KK", hasOD: true, dmg: 800, odDmg: 1000 },
         { 
@@ -42,8 +42,8 @@ const moves = {
                 { name: "乱れ細工手裏剣", cmd: "↓↓PP", dmg: 400 }
             ]
         },
-        { name: "荒鵺捻り", cmd: "j236P", odCmd: "j236PP", hasOD: true, dmg: 1300, odDmg: 1500 },
-       
+        { name: "荒鵺捻り", cmd: "j236P", odCmd: "j236PP", hasOD: true, dmg: 1300, odDmg: 1500 }
+    ],
     unique: [
         { name: "水切り蹴り", cmd: "3中K", dmg: 600 },
         { name: "風車", cmd: "4強K", dmg: 800 },
