@@ -6,11 +6,9 @@
     <title>Kimberly Combo Tool</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-dark"> <!-- 初期テーマ -->
-
+<body class="theme-dark">
 <header>
     <h1>Kimberly Combo Tool</h1>
-    
     <div class="header-controls">
         <div class="theme-select">
             <span>テーマ:</span>
@@ -18,38 +16,28 @@
             <button onclick="setTheme('blue')">Blue</button>
             <button onclick="setTheme('purple')">Purple</button>
         </div>
-        
         <div class="pageSelect">
-            <label>モード：
-                <select id="pageSelector" onchange="location.href=this.value">
-                    <option value="index.html" selected>コンボ作成</option>
-                    <option value="edit.html">編集・削除</option>
-                </select>
-            </label>
+            <select onchange="location.href=this.value">
+                <option value="index.html" selected>コンボ作成</option>
+                <option value="edit.html">編集・削除</option>
+            </select>
         </div>
     </div>
 </header>
-
 <main class="container">
     <section class="combo-section">
-        <div id="combo" class="combo-display">
-            <span class="placeholder">技を選択してコンボを作成...</span>
-        </div>
-        
+        <div id="combo" class="combo-display"><span class="placeholder">技を選択...</span></div>
         <div class="combo-controls">
             <button class="btn-undo" onclick="undo()">1手戻る</button>
             <button class="btn-clear" onclick="clearCombo()">全消去</button>
         </div>
-
         <div class="save-area">
-            <input type="text" id="comboName" placeholder="コンボ名（例：対空始動）">
+            <input type="text" id="comboName" placeholder="コンボ名">
             <button class="btn-save" onclick="saveComboRoute()">保存する</button>
         </div>
     </section>
-
     <section id="moves" class="moves-section"></section>
 </main>
-
 <script src="app.js"></script>
 </body>
 </html>
