@@ -173,3 +173,76 @@ input[type="text"] {
     font-style: italic;
     font-size: 0.9em;
 }
+
+/* --- ここから追加：テーマ切り替えと詳細タグのスタイル --- */
+
+/* テーマごとの背景・カード色の定義 */
+body.theme-dark { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; }
+body.theme-blue { --bg: #0a192f; --card: #172a45; --accent: #64ffda; }
+body.theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; }
+
+/* 既存のbody設定を上書きして変数を適用 */
+body { 
+    background: var(--bg) !important; 
+    transition: background 0.3s ease; 
+}
+
+/* ヘッダー周りのレイアウト調整 */
+.header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* テーマ切り替えボタンの見た目 */
+.theme-select button {
+    padding: 6px 12px;
+    margin-left: 5px;
+    background: #30363d;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 4px;
+    font-size: 12px;
+}
+.theme-select button:hover { background: #444; }
+
+/* 編集画面のカード内：状況タグとダメージタグ */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.situation-tag {
+    background: #30363d;
+    color: #c9d1d9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    border: 1px solid #444;
+}
+
+.damage-tag {
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-left: auto; /* 右端に寄せる */
+}
+
+/* 保存済みルートのテキスト */
+.route-text {
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 6px;
+    color: #e6edf3;
+    word-break: break-all;
+}
+
+/* 既存のカード類にもテーマの色を適用 */
+.standingBtn, .combo-card, .combo-display, #combo, .category.highlight {
+    background: var(--card) !important;
+}
