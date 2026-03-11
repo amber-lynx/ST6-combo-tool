@@ -3,6 +3,8 @@ let damage=0
 let frame=0
 let spray=2
 
+let useArrow=false
+
 const iconMap={
 
 LP:"icons/LP.png",
@@ -28,53 +30,67 @@ return null
 
 }
 
+function commandToArrow(cmd){
+
+if(!useArrow) return cmd
+
+return cmd
+.replaceAll("236","↓↘→")
+.replaceAll("214","↓↙←")
+.replaceAll("623","→↓↘")
+.replaceAll("421","←↓↙")
+.replaceAll("22","↓↓")
+.replaceAll("2","↓")
+.replaceAll("6","→")
+.replaceAll("4","←")
+.replaceAll("8","↑")
+
+}
+
 const moves={
 
 standing:[
 
-{name:"立LP",command:"5LP",damage:300,frame:4},
-{name:"立MP",command:"5MP",damage:600,frame:6},
-{name:"立HP",command:"5HP",damage:900,frame:8},
+{name:"立ち弱P",command:"5LP",damage:300,frame:4},
+{name:"立ち中P",command:"5MP",damage:600,frame:6},
+{name:"立ち強P",command:"5HP",damage:900,frame:8},
 
-{name:"立LK",command:"5LK",damage:300,frame:4},
-{name:"立MK",command:"5MK",damage:700,frame:7},
-{name:"立HK",command:"5HK",damage:900,frame:9}
+{name:"立ち弱K",command:"5LK",damage:300,frame:4},
+{name:"立ち中K",command:"5MK",damage:700,frame:7},
+{name:"立ち強K",command:"5HK",damage:900,frame:9}
 
 ],
 
 crouching:[
 
-{name:"↓LP",command:"2LP",damage:300,frame:4},
-{name:"↓MP",command:"2MP",damage:600,frame:6},
-{name:"↓HP",command:"2HP",damage:900,frame:8},
+{name:"しゃがみ弱P",command:"2LP",damage:300,frame:4},
+{name:"しゃがみ中P",command:"2MP",damage:600,frame:6},
+{name:"しゃがみ強P",command:"2HP",damage:900,frame:8},
 
-{name:"↓LK",command:"2LK",damage:300,frame:4},
-{name:"↓MK",command:"2MK",damage:700,frame:7},
-{name:"↓HK",command:"2HK",damage:900,frame:9}
+{name:"しゃがみ弱K",command:"2LK",damage:300,frame:4},
+{name:"しゃがみ中K",command:"2MK",damage:700,frame:7},
+{name:"しゃがみ強K",command:"2HK",damage:900,frame:9}
 
 ],
 
 movement:[
 
-{name:"前ステップ",command:"66",damage:0,frame:16},
-{name:"DR",command:"DR",damage:0,frame:8}
+{name:"前ステップ",command:"66",frame:16},
+{name:"DR",command:"DR",frame:8}
 
 ],
 
 special:[
 
-{name:"流転",command:"236P",damage:800,frame:10},
-
 {
 name:"疾駆け",
 command:"214K",
-frame:18,
 followups:[
 
 {name:"急停止",command:"P"},
-{name:"胴刎ね",command:"LK",damage:900,frame:12},
-{name:"影すくい",command:"MK",damage:1000,frame:14},
-{name:"首狩り",command:"HK",damage:1100,frame:16},
+{name:"胴刎ね",command:"LK"},
+{name:"影すくい",command:"MK"},
+{name:"首狩り",command:"HK"},
 {name:"弧空",branch:true}
 
 ]
@@ -84,8 +100,31 @@ followups:[
 name:"弧空",
 followups:[
 
-{name:"武神イズナ落とし",command:"P",damage:1600,frame:20},
-{name:"武神鉾刃脚",command:"K",damage:1400,frame:18}
+{name:"武神イズナ落とし",command:"P"},
+{name:"武神鉾刃脚",command:"K"}
+
+]
+},
+
+{
+name:"召雷細工",
+command:"↓↓P",
+followups:[
+
+{name:"細工手裏剣",command:"↓↓P"},
+{name:"乱れ細工手裏剣",command:"↓↓PP"}
+
+]
+},
+
+{
+name:"飛箭蹴",
+command:"236K",
+followups:[
+
+{name:"↖"},
+{name:"↑"},
+{name:"↗"}
 
 ]
 }
@@ -98,18 +137,18 @@ function drawMoves(){
 
 let html=""
 
-html+="<div class='category'><h2>Standing</h2>"
+html+="<div class='category'><h2>Standing</h2><div class='standingGrid'>"
 
 moves.standing.forEach(m=>{
-html+=button(m)
+html+=button(m,true)
 })
 
-html+="</div>"
+html+="</div></div>"
 
 html+="<div class='category'><h2>Crouching</h2>"
 
 moves.crouching.forEach(m=>{
-html+=button(m)
+html+=button(m,false)
 })
 
 html+="</div>"
@@ -117,7 +156,7 @@ html+="</div>"
 html+="<div class='category'><h2>Movement</h2>"
 
 moves.movement.forEach(m=>{
-html+=button(m)
+html+=button(m,false)
 })
 
 html+="</div>"
@@ -125,7 +164,7 @@ html+="</div>"
 html+="<div class='category'><h2>Special</h2>"
 
 moves.special.forEach(m=>{
-html+=button(m)
+html+=button(m,false)
 })
 
 html+="</div>"
@@ -134,27 +173,25 @@ document.getElementById("moves").innerHTML=html
 
 }
 
-function button(m){
+function button(m,showIcon){
 
-let icon=getIcon(m.name)
+let icon=getIcon(m.command||"")
 
 let img=""
 
-if(icon)
+if(showIcon && icon)
 img=`<img class="icon" src="${icon}">`
 
-let cmd=m.command?`<span style="opacity:0.6">(${m.command})</span>`:""
+let cmd=m.command?`【${commandToArrow(m.command)}】`:""
 
 return `
 <button onclick='addMove(${JSON.stringify(m)})'>
 ${img}
-${m.name} ${cmd}
+${m.name}${cmd}
 </button>
 `
 
 }
-
-drawMoves()
 
 function addMove(m){
 
@@ -182,9 +219,9 @@ html+=`<button onclick="branch('弧空')">弧空</button>`
 
 }else{
 
-let cmd=f.command?`<span style="opacity:0.6">(${f.command})</span>`:""
+let cmd=f.command?`【${commandToArrow(f.command)}】`:""
 
-html+=`<button onclick='addMove(${JSON.stringify(f)})'>${f.name} ${cmd}</button>`
+html+=`<button onclick='addMove(${JSON.stringify(f)})'>${f.name}${cmd}</button>`
 
 }
 
@@ -208,16 +245,9 @@ let html=""
 
 combo.forEach((m,i)=>{
 
-let icon=getIcon(m.name)
+let cmd=m.command?`【${commandToArrow(m.command)}】`:""
 
-let img=""
-
-if(icon)
-img=`<img src="${icon}">`
-
-let cmd=m.command?`<span style="opacity:0.6">(${m.command})</span>`:""
-
-html+=`<span class="comboMove">${img}${m.name} ${cmd}</span>`
+html+=`<span class="comboMove">${m.name}${cmd}</span>`
 
 if(i<combo.length-1)
 html+=`<span class="arrow">→</span>`
@@ -247,7 +277,7 @@ function saveCombo(){
 
 let saved=JSON.parse(localStorage.getItem("combos")||"[]")
 
-saved.push(combo.map(c=>c.command || c.name))
+saved.push(combo.map(c=>c.name))
 
 localStorage.setItem("combos",JSON.stringify(saved))
 
@@ -269,4 +299,5 @@ document.getElementById("saved").innerHTML=html
 
 }
 
+drawMoves()
 drawSaved()
