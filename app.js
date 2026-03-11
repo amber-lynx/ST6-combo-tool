@@ -7,47 +7,58 @@ const iconMap = {
 
 const moves = {
     standing: [
-        { name: "弱P", num: 7, cmd: "LP" }, { name: "中P", num: 8, cmd: "MP" }, { name: "強P", num: 9, cmd: "HP" },
-        { name: "弱K", num: 4, cmd: "LK" }, { name: "中K", num: 5, cmd: "MK" }, { name: "強K", num: 6, cmd: "HK" },
+        { name: "弱P", cmd: "LP" }, { name: "中P", cmd: "MP" }, { name: "強P", cmd: "HP" },
+        { name: "弱K", cmd: "LK" }, { name: "中K", cmd: "MK" }, { name: "強K", cmd: "HK" },
     ],
     crouching: [
         { name: "屈弱P", cmd: "2LP" }, { name: "屈中P", cmd: "2MP" }, { name: "屈強P", cmd: "2HP" },
         { name: "屈弱K", cmd: "2LK" }, { name: "屈中K", cmd: "2MK" }, { name: "屈強K", cmd: "2HK" },
     ],
-    // ドライブゲージ消費技
     drive: [
-        { name: "ドライブインパクト（不動咎）", cmd: "HP+HK" },
-        { name: "ドライブリバーサル（転）", cmd: "6+HP+HK" },
-        { name: "ドライブパリィ", cmd: "MP+MK" },
+        { name: "ドライブインパクト", cmd: "HP+HK" },
+        { name: "ドライブリバーサル", cmd: "6+HP+HK" },
         { name: "キャンセルラッシュ", cmd: "66" },
-        { name: "OD版 必殺技", cmd: "ボタン2つ押し" }
+        { name: "OD武神旋風脚", cmd: "214KK" },
+        { name: "OD流転一文字", cmd: "236PP" },
+        { name: "OD彩隠形", cmd: "214PP" },
+        { name: "OD荒鵺捻り", cmd: "j236PP" },
+        { name: "OD空中武神旋風脚", cmd: "j214KK" },
+        { 
+            name: "OD疾駆け", cmd: "214KK", 
+            followups: [
+                { name: "急停止", cmd: "P" }, { name: "胴刎ね", cmd: "K" },
+                { name: "影すくい", cmd: "2K" }, { name: "首狩り", cmd: "6K" },
+                { name: "弧空", cmd: "8", followups: [
+                    { name: "武神イズナ落とし", cmd: "P" }, { name: "武神鉾刃脚", cmd: "K" }
+                ]}
+            ]
+        }
     ],
-    // 通常必殺技（ゲージ消費なし）
     special: [
         { name: "武神旋風脚", cmd: "214K" },
-        { name: "空中武神旋風脚", cmd: "j214K" },
         { name: "流転一文字", cmd: "236P" },
         { name: "彩隠形", cmd: "214P" },
         { name: "召雷細工", cmd: "22P" },
         { name: "荒鵺捻り", cmd: "j236P" },
+        { name: "空中武神旋風脚", cmd: "j214K" },
         { 
             name: "疾駆け", cmd: "214K", 
             followups: [
                 { name: "急停止", cmd: "P" }, { name: "胴刎ね", cmd: "K" },
                 { name: "影すくい", cmd: "2K" }, { name: "首狩り", cmd: "6K" },
-                { 
-                    name: "弧空", cmd: "8",
-                    followups: [
-                        { name: "武神イズナ落とし", cmd: "P" },
-                        { name: "武神鉾刃脚", cmd: "K" }
-                    ]
-                }
+                { name: "弧空", cmd: "8", followups: [
+                    { name: "武神イズナ落とし", cmd: "P" }, { name: "武神鉾刃脚", cmd: "K" }
+                ]}
             ]
         }
     ],
     unique: [
         { name: "水切り蹴り", cmd: "3中K" }, { name: "風車", cmd: "4強K" },
-        { name: "飛箭蹴", cmd: "6強K" }, { name: "武神虎連牙", cmd: "MP>HP" }
+        { name: "飛箭蹴", cmd: "6強K" }, { name: "肘落とし", cmd: "j2MP" },
+        { name: "武神虎連牙", cmd: "MP>HP" },
+        { name: "武神天架拳", cmd: "LP>MP>HP>HK" },
+        { name: "武神獄鎖拳", cmd: "LP>MP>2HP>HK" },
+        { name: "武神獄鎖投げ", cmd: "LP>MP>2HP>2HK" }
     ],
     sa: [
         { name: "SA1 武神乱拍手", cmd: "236236K" },
@@ -58,8 +69,7 @@ const moves = {
 
 document.addEventListener("DOMContentLoaded", () => {
     drawMoves();
-    const savedTheme = localStorage.getItem("selectedTheme") || "dark";
-    setTheme(savedTheme);
+    setTheme(localStorage.getItem("selectedTheme") || "dark");
 });
 
 function setTheme(theme) {
@@ -70,28 +80,16 @@ function setTheme(theme) {
 function drawMoves() {
     const container = document.getElementById("moves");
     if (!container) return;
-    
     let html = "";
-    
-    // 通常技
     html += `<div class="category"><h3>Normals</h3><div class="standingGrid">`;
-    moves.standing.forEach(m => {
-        html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'><img src="${getIcon(m.name)}" onerror="this.style.display='none'"><span>${m.name}</span></button>`;
-    });
-    moves.crouching.forEach(m => {
-        html += `<button class="standingBtn crouch" onclick='addMove(${JSON.stringify(m)})'><span>${m.name}</span></button>`;
-    });
+    moves.standing.forEach(m => { html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'><img src="${getIcon(m.name)}" onerror="this.style.display='none'"><span>${m.name}</span></button>`; });
+    moves.crouching.forEach(m => { html += `<button class="standingBtn crouch" onclick='addMove(${JSON.stringify(m)})'><span>${m.name}</span></button>`; });
     html += `</div></div>`;
-
-    // ドライブシステムを表示
     html += drawSection("Drive System (ゲージ消費)", moves.drive);
-
-    // 必殺技・派生・特殊技・SA
+    html += `<div class="category highlight"><h3>Followup (派生技)</h3><div id="followupList" class="followup-grid">選択可能な派生なし</div></div>`;
     html += drawSection("Special Moves", moves.special);
-    html += `<div class="category highlight"><h3>Followup</h3><div id="followupList" class="followup-grid">選択可能な派生なし</div></div>`;
     html += drawSection("Unique Attacks", moves.unique);
     html += drawSection("Super Arts", moves.sa);
-    
     container.innerHTML = html;
 }
 
@@ -133,9 +131,8 @@ function saveComboRoute() {
     if (!name || combo.length === 0) return alert("名前と内容を入力してください");
     const dmg = prompt("ダメージを入力（任意）", "0");
     const situation = prompt("状況（例：画面端、カウンター）", "中央");
-
     const saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    saved.push({ id: Date.now(), name: name, damage: dmg, situation: situation, route: combo.map(c => c.name) });
+    saved.push({ id: Date.now(), name, damage: dmg, situation, route: combo.map(c => c.name) });
     localStorage.setItem("comboRoutes", JSON.stringify(saved));
     alert("保存完了！");
     clearCombo();
