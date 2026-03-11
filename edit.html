@@ -2,15 +2,37 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>コンボ編集・削除ページ</title>
+<title>Kimberly Combo Tool - 編集</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-<h1>登録済みコンボ 編集・削除</h1>
 
-<div id="savedRoutes"></div>
+<h1>Kimberly Combo Tool - 編集</h1>
+
+<!-- ページ切替プルダウン -->
+<div class="pageSelect">
+    <label>ページ切替：
+        <select id="pageSelector" onchange="switchPage()">
+            <option value="index.html">コンボ作成</option>
+            <option value="edit.html" selected>編集・削除</option>
+        </select>
+    </label>
+</div>
+
+<div class="panel">
+    <div id="savedRoutes"></div>
+</div>
 
 <script src="edit.js"></script>
+
+<script>
+// プルダウン切替
+function switchPage(){
+    const sel = document.getElementById("pageSelector");
+    window.location.href = sel.value;
+}
+</script>
+
 </body>
 </html>
