@@ -11,20 +11,20 @@ const iconMap = {
 
 const moves = {
     standing: [
-        { name: "弱P", cmd: "LP", dmg: 300, start: 4, guard: -2 },
-        { name: "中P", cmd: "MP", dmg: 600, start: 6, guard: 2 },
-        { name: "強P", cmd: "HP", dmg: 800, start: 10, guard: -3 },
-        { name: "弱K", cmd: "LK", dmg: 300, start: 4, guard: -3 },
-        { name: "中K", cmd: "MK", dmg: 700, start: 8, guard: -4 },
-        { name: "強K", cmd: "HK", dmg: 900, start: 12, guard: -3 },
+        { name: "弱P", cmd: "弱P", dmg: 300, start: 4, guard: -2 },
+        { name: "中P", cmd: "中P", dmg: 600, start: 6, guard: 2 },
+        { name: "強P", cmd: "強P", dmg: 800, start: 10, guard: -3 },
+        { name: "弱K", cmd: "弱K", dmg: 300, start: 4, guard: -3 },
+        { name: "中K", cmd: "中K", dmg: 700, start: 8, guard: -4 },
+        { name: "強K", cmd: "強K", dmg: 900, start: 12, guard: -3 },
     ],
     crouching: [
-        { name: "屈弱P", cmd: "2LP", dmg: 300, start: 4, guard: -2 },
-        { name: "屈中P", cmd: "2MP", dmg: 600, start: 6, guard: 1 },
-        { name: "屈強P", cmd: "2HP", dmg: 800, start: 9, guard: -10 },
-        { name: "屈弱K", cmd: "2LK", dmg: 300, start: 5, guard: -2 },
-        { name: "屈中K", cmd: "2MK", dmg: 700, start: 8, guard: -5 },
-        { name: "屈強K", cmd: "2HK", dmg: 900, start: 10, guard: -11 },
+        { name: "屈弱P", cmd: "2弱P", dmg: 300, start: 4, guard: -2 },
+        { name: "屈中P", cmd: "2中P", dmg: 600, start: 6, guard: 1 },
+        { name: "屈強P", cmd: "2強P", dmg: 800, start: 9, guard: -10 },
+        { name: "屈弱K", cmd: "2弱K", dmg: 300, start: 5, guard: -2 },
+        { name: "屈中K", cmd: "2中K", dmg: 700, start: 8, guard: -5 },
+        { name: "屈強K", cmd: "2強K", dmg: 900, start: 10, guard: -11 },
     ],
     special: [
         { name: "武神旋風脚", cmd: "214K", odCmd: "214KK", hasOD: true, dmg: 1000, odDmg: 1200, odGauge: 2 },
@@ -47,23 +47,28 @@ const moves = {
         { 
             name: "召雷細工", cmd: "22P", odCmd: "22PP", hasOD: true, dmg: 0, odGauge: 2,
             followups: [
-                { name: "細工手裏剣", cmd: "22P", dmg: 200 },
-                { name: "乱れ細工手裏剣", cmd: "22PP", dmg: 400 }
+                { name: "細工手裏剣", cmd: "↓↓P", dmg: 200 },
+                { name: "乱れ細工手裏剣", cmd: "↓↓PP", dmg: 400 }
             ]
         },
         { name: "荒鵺捻り", cmd: "j236P", odCmd: "j236PP", hasOD: true, dmg: 1300, odDmg: 1500, odGauge: 2 }
     ],
     unique: [
-        { name: "水切り蹴り", cmd: "3中K", dmg: 600 },
-        { name: "風車", cmd: "4強K", dmg: 800 },
+        { name: "水切り蹴り", cmd: "3中K", dmg: 600, start: 16, guard: -4 },
+        { name: "風車", cmd: "4強K", dmg: 800, start: 15, guard: -6 },
         { 
-            name: "飛箭蹴", cmd: "6強K", dmg: 700,
-            followups: [{ name: "↖(7)", dmg: 0 }, { name: "↑(8)", dmg: 0 }, { name: "↗(9)", dmg: 0 }]
+            name: "飛箭蹴", cmd: "6強K", dmg: 700, start: 14,
+            followups: [{ name: "↖(7)" }, { name: "↑(8)" }, { name: "↗(9)" }]
         },
-        { name: "肘落とし(前J)", cmd: "j2中P", dmg: 600 },
-        { name: "武神虎連牙", cmd: "MP>HP", dmg: 1200 },
-        { name: "武神天架拳", cmd: "LP>MP>HP>HK", dmg: 1800 },
-        { name: "武神獄鎖拳", cmd: "LP>MP>2HP>HK", dmg: 1700 }
+        { name: "肘落とし(前J)", cmd: "j2中P", dmg: 600, start: 9 },
+        { name: "武神虎連牙", cmd: "中P＞強P", dmg: 1200 },
+        { name: "武神天架拳", cmd: "弱P＞中P＞強P＞強K", dmg: 1800 },
+        { name: "武神獄鎖拳", cmd: "弱P＞中P＞2強P＞強K", dmg: 1700 },
+        { name: "武神獄鎖投げ", cmd: "弱P＞中P＞2強P＞2弱K", dmg: 1600 }
+    ],
+    throws: [
+        { name: "前投げ(縄掛背負い)", cmd: "弱P+弱K", dmg: 1200 },
+        { name: "後ろ投げ(鍾打巴)", cmd: "4+弱P+弱K", dmg: 1200 }
     ],
     sa: [
         { name: "SA1 武神乱拍手", cmd: "236236K", dmg: 2100 },
@@ -80,10 +85,14 @@ const moves = {
 document.addEventListener("DOMContentLoaded", () => {
     applyTheme();
     drawMoves();
+    updateStats();
 });
 
 function setTheme(theme) { localStorage.setItem("selectedTheme", theme); applyTheme(); }
-function applyTheme() { document.body.className = 'theme-' + (localStorage.getItem("selectedTheme") || "dark"); }
+function applyTheme() { 
+    const theme = localStorage.getItem("selectedTheme") || "dark";
+    document.body.className = 'theme-' + theme; 
+}
 
 function toggleOD() {
     isODMode = !isODMode;
@@ -118,7 +127,7 @@ function drawMoves() {
     });
     html += `</div></div>`;
 
-    // 必殺技 (OD統合)
+    // 必殺技
     html += `<div class="category"><h3>Special Moves</h3><div class="move-grid">`;
     moves.special.forEach(m => {
         let name = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
@@ -127,7 +136,7 @@ function drawMoves() {
     });
     html += `</div></div>`;
 
-    // 派生エリア
+    // 派生
     html += `<div class="category highlight"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
 
     // 特殊技
@@ -137,7 +146,14 @@ function drawMoves() {
     });
     html += `</div></div>`;
 
-    // SA
+    // 投げ
+    html += `<div class="category"><h3>Throws</h3><div class="move-grid">`;
+    moves.throws.forEach(m => {
+        html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`;
+    });
+    html += `</div></div>`;
+
+    // SA (独立)
     html += `<div class="category"><h3>Super Arts</h3><div class="move-grid">`;
     moves.sa.forEach(m => {
         html += `<button class="sa-btn" onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`;
@@ -159,7 +175,7 @@ function addMove(m) {
     if (isODMode && m.hasOD) {
         finalMove.name = "OD" + m.name;
         finalMove.dmg = m.odDmg || m.dmg;
-        finalMove.gauge = m.odGauge || m.gauge;
+        finalMove.gauge = m.odGauge || 0;
     }
     combo.push(finalMove);
     updateStats();
@@ -186,7 +202,7 @@ function updateComboDisplay() {
 }
 
 function undo() { combo.pop(); updateStats(); updateComboDisplay(); document.getElementById("followupList").innerHTML = "派生なし"; }
-function clearCombo() { combo = []; updateStats(); updateComboDisplay(); document.getElementById("followupList").innerHTML = "派生なし"; }
+function clearCombo() { combo = []; totalDamage = 0; totalGauge = 0; updateStats(); updateComboDisplay(); document.getElementById("followupList").innerHTML = "派生なし"; }
 
 function saveComboRoute() {
     const name = document.getElementById("comboName").value.trim();
