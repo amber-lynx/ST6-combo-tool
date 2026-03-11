@@ -158,3 +158,19 @@ function clearCombo(){
 }
 
 drawMoves();
+
+// 別タブで編集ページを開く
+function openEditPage(){
+    window.open("edit.html", "_blank");
+}
+
+// ページロード時に編集データがあれば読み込む
+window.addEventListener("load", function(){
+    const editData = JSON.parse(localStorage.getItem("editCombo") || "null");
+    if(editData){
+        combo = editData.route.route.map(name => ({name:name}));
+        update();
+        document.getElementById("followupsText").innerText = "派生技なし";
+        localStorage.removeItem("editCombo");
+    }
+});
