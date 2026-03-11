@@ -5,10 +5,6 @@ font-family:sans-serif;
 padding:20px;
 }
 
-h1{
-margin-bottom:10px;
-}
-
 .panel{
 background:#161b22;
 padding:15px;
@@ -24,16 +20,13 @@ border:none;
 color:white;
 
 padding:14px 18px;
-
 margin:6px;
 
 border-radius:8px;
-
 cursor:pointer;
 
 display:inline-flex;
 align-items:center;
-
 gap:10px;
 
 font-size:16px;
@@ -49,40 +42,46 @@ height:48px;
 }
 
 .comboLine{
-
 font-size:24px;
-
 margin-top:15px;
-
 }
 
 .comboMove{
-
 display:inline-flex;
 align-items:center;
-
 margin-right:10px;
-
 gap:6px;
-
 }
 
 .comboMove img{
-
 height:40px;
-
 }
 
 .arrow{
-
 margin:0 8px;
-
 opacity:0.6;
-
 }
 
 .category{
-
 margin-top:25px;
+}
+
+.standingGrid{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+
+}
+
+.standingGrid button{
+
+flex-direction:column;
+
+}
+
+.standingGrid img{
+
+height:72px;
 
 }
