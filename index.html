@@ -6,24 +6,31 @@
     <title>Kimberly Combo Tool</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-dark"> <!-- 初期テーマ -->
 
 <header>
     <h1>Kimberly Combo Tool</h1>
     
-    <!-- ページ切替 -->
-    <div class="pageSelect">
-        <label>モード：
-            <select id="pageSelector" onchange="location.href=this.value">
-                <option value="index.html" selected>コンボ作成</option>
-                <option value="edit.html">編集・削除</option>
-            </select>
-        </label>
+    <div class="header-controls">
+        <div class="theme-select">
+            <span>テーマ:</span>
+            <button onclick="setTheme('dark')">Dark</button>
+            <button onclick="setTheme('blue')">Blue</button>
+            <button onclick="setTheme('purple')">Purple</button>
+        </div>
+        
+        <div class="pageSelect">
+            <label>モード：
+                <select id="pageSelector" onchange="location.href=this.value">
+                    <option value="index.html" selected>コンボ作成</option>
+                    <option value="edit.html">編集・削除</option>
+                </select>
+            </label>
+        </div>
     </div>
 </header>
 
 <main class="container">
-    <!-- コンボ表示・操作エリア -->
     <section class="combo-section">
         <div id="combo" class="combo-display">
             <span class="placeholder">技を選択してコンボを作成...</span>
@@ -35,19 +42,14 @@
         </div>
 
         <div class="save-area">
-            <input type="text" id="comboName" placeholder="コンボ名（例：画面端 投げ始動）">
+            <input type="text" id="comboName" placeholder="コンボ名（例：対空始動）">
             <button class="btn-save" onclick="saveComboRoute()">保存する</button>
         </div>
     </section>
 
-    <!-- 技選択エリア -->
-    <section id="moves" class="moves-section">
-        <!-- ここにapp.jsからボタンが生成されます -->
-        <p class="loading">読み込み中...</p>
-    </section>
+    <section id="moves" class="moves-section"></section>
 </main>
 
 <script src="app.js"></script>
-
 </body>
 </html>
