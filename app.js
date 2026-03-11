@@ -33,9 +33,9 @@ const moves = {
             name: "疾駆け", cmd: "214K", odCmd: "214KK", hasOD: true, gauge: 0, odGauge: 2,
             followups: [
                 { name: "急停止", cmd: "P", dmg: 0 },
-                { name: "胴刎ね", cmd: "K", dmg: 800 },
-                { name: "影すくい", cmd: "2K", dmg: 800 },
-                { name: "首狩り", cmd: "6K", dmg: 900 },
+                { name: "胴刎ね", cmd: "弱K", dmg: 800 },
+                { name: "影すくい", cmd: "中K", dmg: 800 },
+                { name: "首狩り", cmd: "強K", dmg: 900 },
                 { name: "弧空", cmd: "8", followups: [
                     { name: "武神イズナ落とし", cmd: "P", dmg: 1500 },
                     { name: "武神鉾刃脚", cmd: "K", dmg: 1200 }
@@ -54,20 +54,28 @@ const moves = {
         { name: "荒鵺捻り", cmd: "j236P", odCmd: "j236PP", hasOD: true, dmg: 1300, odDmg: 1500, gauge: 0, odGauge: 2 }
     ],
     unique: [
-        { name: "肘落とし(前J)", cmd: "j2MP", dmg: 600 },
-        { name: "武神虎連牙", cmd: "MP>HP", dmg: 1200 },
-        { name: "武神天架拳", cmd: "LP>MP>HP>HK", dmg: 1800 },
-        { name: "武神獄鎖拳", cmd: "LP>MP>2HP>HK", dmg: 1700 }
+        { name: "水切り蹴り", cmd: "3中K", dmg: 600, start: 16, guard: -4 },
+        { name: "風車", cmd: "4強K", dmg: 800, start: 15, guard: -6 },
+        { 
+            name: "飛箭蹴", cmd: "6強K", dmg: 700, start: 14,
+            followups: [{ name: "↖(7)" }, { name: "↑(8)" }, { name: "↗(9)" }]
+        },
+        { name: "肘落とし(前J)", cmd: "j2中P", dmg: 600, start: 9 },
+        { name: "武神虎連牙", cmd: "中P＞強P", dmg: 1200 },
+        { name: "武神天架拳", cmd: "弱P＞中P＞強P＞強K", dmg: 1800 },
+        { name: "武神獄鎖拳", cmd: "弱P＞中P＞2強P＞強K", dmg: 1700 },
+        { name: "武神獄鎖投げ", cmd: "弱P＞中P＞2強P＞2弱K", dmg: 1600 }
     ],
     system: [
         { name: "インパクト", cmd: "HP+HK", dmg: 800, gauge: 1 },
+        { name: "リバーサル", cmd: "6+HP+HK", dmg: 500, gauge: 2 },
         { name: "ラッシュ(生)", cmd: "66", gauge: 1 },
         { name: "ラッシュ(取消)", cmd: "66", gauge: 3 }
     ],
     sa: [
-        { name: "SA1 武神乱拍手", dmg: 2100 },
-        { name: "SA2 武神天翔亢竜", dmg: 3000 },
-        { name: "SA3 武神顕現神楽", dmg: 4000 }
+        { name: "SA1 武神乱拍手", cmd: "236236K", dmg: 2100 },
+        { name: "SA2 武神天翔亢竜", cmd: "214214P", dmg: 3000 },
+        { name: "SA3 武神顕現神楽", cmd: "236236P", dmg: 4000 }
     ]
 };
 
@@ -82,7 +90,11 @@ function applyTheme() { document.body.className = 'theme-' + (localStorage.getIt
 
 function toggleOD() {
     isODMode = !isODMode;
-    document.getElementById("odSwitcher").classList.toggle("active", isODMode);
+    const btn = document.getElementById("odSwitcher");
+    if(btn) {
+        btn.classList.toggle("active", isODMode);
+        btn.innerHTML = isODMode ? "ODモード: ON 🔥" : "ODモード: OFF";
+    }
     drawMoves();
 }
 
@@ -95,15 +107,20 @@ function toggleCorner() {
 
 function drawMoves() {
     const container = document.getElementById("moves");
-    let html = `<div class="category"><h3>Normals (Stand/Crouch)</h3><div class="standingGrid">`;
+    if (!container) return;
+    let html = "";
+    
+    // 通常技（立ち・屈み）
+    html += `<div class="category"><h3>Normals (Stand/Crouch)</h3><div class="standingGrid">`;
     [...moves.standing, ...moves.crouching].forEach(m => {
         html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
             <img src="${getIcon(m.name)}" onerror="this.style.display='none'">
-            <span>${m.name}</span><small>発${m.start}/硬${m.guard > 0 ? '+'+m.guard : m.guard}</small>
+            <span>${m.name}</span><small>発${m.start}/硬${m.guard > 0 ? '+'+m.guard : (m.guard || '-')}</small>
         </button>`;
     });
     html += `</div></div>`;
 
+    // 必殺技
     html += `<div class="category"><h3>Special Moves</h3><div class="move-grid">`;
     moves.special.forEach(m => {
         let name = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
@@ -112,14 +129,21 @@ function drawMoves() {
     });
     html += `</div></div>`;
 
+    // 派生エリア
     html += `<div class="category highlight"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
-    html += drawSection("Super Arts / System", [...moves.sa, ...moves.unique, ...moves.system]);
+
+    // 特殊技
+    html += drawSection("Unique Attacks", moves.unique);
+
+    // ドライブ・SA
+    html += drawSection("Drive System / Super Arts", [...moves.system, ...moves.sa]);
+    
     container.innerHTML = html;
 }
 
 function drawSection(title, list) {
     let html = `<div class="category"><h3>${title}</h3><div class="move-grid">`;
-    list.forEach(m => { html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`; });
+    list.forEach(m => { html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name} <small>${m.cmd || ''}</small></button>`; });
     html += `</div></div>`;
     return html;
 }
@@ -149,14 +173,18 @@ function addMove(m) {
 function updateStats() {
     totalDamage = combo.reduce((sum, m) => sum + (m.dmg || 0), 0);
     totalGauge = combo.reduce((sum, m) => sum + (m.gauge || 0), 0);
-    document.getElementById("damageCount").innerText = `Damage: ${totalDamage}`;
-    const gCount = document.getElementById("gaugeCount");
-    gCount.innerText = `消費ゲージ: ${totalGauge.toFixed(1)}`;
-    gCount.style.color = totalGauge > 6 ? "#ff4444" : "#58a6ff";
+    const dmgEl = document.getElementById("damageCount");
+    const gaugeEl = document.getElementById("gaugeCount");
+    if(dmgEl) dmgEl.innerText = `Damage: ${totalDamage}`;
+    if(gaugeEl) {
+        gaugeEl.innerText = `消費ゲージ: ${totalGauge.toFixed(1)}`;
+        gaugeEl.style.color = totalGauge > 6 ? "#ff4444" : "#58a6ff";
+    }
 }
 
 function updateComboDisplay() {
     const container = document.getElementById("combo");
+    if (!container) return;
     if (combo.length === 0) { container.innerHTML = '<span class="placeholder">技を選択...</span>'; return; }
     container.innerHTML = combo.map((m, i) => `<span class="combo-unit">${m.name}${i < combo.length - 1 ? '<span class="arrow">→</span>' : ''}</span>`).join("");
 }
@@ -169,13 +197,8 @@ function saveComboRoute() {
     if (!name || combo.length === 0) return alert("名前と内容を入力してください");
     const memo = prompt("メモ（例：最速入力、微歩き）", "");
     const video = prompt("参考動画URL（YouTube/Xなど）", "");
-    
     const saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    saved.push({ 
-        id: Date.now(), name, damage: totalDamage, gauge: totalGauge, 
-        situation: isCorner ? "画面端" : "中央", 
-        memo, video, route: combo.map(c => c.name) 
-    });
+    saved.push({ id: Date.now(), name, damage: totalDamage, gauge: totalGauge, situation: isCorner ? "画面端" : "中央", memo, video, route: combo.map(c => c.name) });
     localStorage.setItem("comboRoutes", JSON.stringify(saved));
     alert("保存完了！");
     clearCombo();
