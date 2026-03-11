@@ -1,248 +1,30 @@
-/* 基本設定：背景と文字色 */
-body {
-    background: #0e1117;
-    color: #ffffff;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    padding: 20px;
-    line-height: 1.6;
-}
+.theme-dark { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; }
+.theme-blue { --bg: #0a192f; --card: #172a45; --accent: #64ffda; }
+.theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; }
 
-/* ライトモード（bodyに.lightクラスがついた時用。現状の.darkと逆転させて整理） */
-body.light {
-    background: #f4f4f4;
-    color: #111111;
-}
+body { background: var(--bg); color: white; font-family: sans-serif; padding: 20px; transition: 0.3s; }
+.header-controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.theme-select button { padding: 5px; margin-left: 5px; cursor: pointer; }
 
-/* 通常技の6ボタン配置（3列 × 2段） */
-.standingGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* autoより1frの方が幅が揃って綺麗 */
-    grid-template-rows: repeat(2, auto);
-    gap: 10px;
-    max-width: 300px; /* 広がりすぎ防止 */
-    margin-bottom: 20px;
-}
+.combo-display { background: var(--card); border: 2px solid #30363d; border-radius: 12px; padding: 20px; min-height: 60px; display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+.combo-unit { display: flex; flex-direction: column; align-items: center; }
+.combo-cmd { font-size: 0.7em; color: #8b949e; }
+.arrow { margin: 0 5px; color: #58a6ff; }
 
-/* 通常技ボタンの中身 */
-.standingBtn {
-    background: #1c1f26;
-    border: 1px solid #30363d;
-    color: white;
-    padding: 8px;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    transition: 0.2s;
-}
+.standingGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 350px; margin-bottom: 20px; }
+.standingBtn { background: var(--card); border: 1px solid #30363d; color: white; padding: 10px; border-radius: 6px; cursor: pointer; }
+.standingBtn img { width: 40px; height: 40px; }
 
-.standingBtn:hover {
-    background: #30363d;
-}
+.move-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px; }
+.move-grid button, .followup-btn { background: #21262d; color: white; border: 1px solid #30363d; padding: 10px; border-radius: 4px; cursor: pointer; }
+.category.highlight { border: 1px solid #d29922; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
 
-/* アイコンサイズ（ここを変更する場所） */
-.standingBtn img {
-    width: 50px;  /* 60pxだとスマホで少し大きいかも？お好みで！ */
-    height: 50px;
-    object-fit: contain;
-    margin-bottom: 4px;
-}
-
-/* 必殺技などの2列グリッド */
-.gridCols2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-/* コンボ表示エリア */
-#combo {
-    background: #161b22;
-    padding: 15px;
-    border-radius: 8px;
-    min-height: 50px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    border: 1px solid #30363d;
-}
-
-.comboMove {
-    font-size: 18px;
-    font-weight: bold;
-    color: #58a6ff; /* 青色などで目立たせるとコンボ感が出る */
-}
-
-.arrow {
-    margin: 0 8px;
-    font-weight: bold;
-    color: #8b949e;
-    opacity: 0.8;
-}
-
-/* 編集画面のカード用追加スタイル */
-.combo-card {
-    background: #1c1f26;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 12px;
-}
-/* コンボ表示エリアをカッコよく */
-.combo-display {
-    background: #161b22;
-    border: 2px solid #30363d;
-    border-radius: 12px;
-    padding: 20px;
-    min-height: 80px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-}
-
-/* ボタンの共通スタイル */
-button {
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
-    border: none;
-    border-radius: 4px;
-}
-
-/* Undoボタン（オレンジ） */
-.btn-undo { background: #d29922; color: white; padding: 10px 20px; }
-/* Clearボタン（赤） */
-.btn-clear { background: #f85149; color: white; padding: 10px 20px; }
-/* 保存ボタン（緑） */
-.btn-save { background: #238636; color: white; padding: 10px 30px; }
-
-/* 入力欄（黒板風） */
-input[type="text"] {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    color: white;
-    padding: 10px;
-    border-radius: 4px;
-    width: 250px;
-}
-
-/* 必殺技や特殊技ボタンを通常技と区別しやすくする */
-.move-grid button, .followup-btn {
-    background: #21262d;
-    color: #c9d1d9;
-    border: 1px solid #30363d;
-    padding: 10px;
-    font-size: 14px;
-    width: 100%; /* グリッド内で幅を揃える */
-}
-
-.move-grid button:hover, .followup-btn:hover {
-    background: #30363d;
-    border-color: #8b949e;
-}
-
-/* 派生技エリア（highlight）を少し目立たせる */
-.category.highlight {
-    border: 1px solid #d29922; /* Undoボタンと同じ色で「注目」 */
-    padding: 10px;
-    border-radius: 8px;
-    background: #1c1f26;
-}
-
-/* コンボの中身のコマンドを小さく薄く（app.jsの最高版に対応） */
-.combo-cmd {
-    font-size: 0.75em;
-    color: #8b949e;
-    margin-left: 2px;
-    display: block; /* 技名の下にコマンドを表示 */
-}
-
-/* スマホ等で入力欄がはみ出さないように */
-input[type="text"] {
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-/* 派生なしの時の文字色 */
-.none {
-    color: #484f58;
-    font-style: italic;
-    font-size: 0.9em;
-}
-
-/* --- ここから追加：テーマ切り替えと詳細タグのスタイル --- */
-
-/* テーマごとの背景・カード色の定義 */
-body.theme-dark { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; }
-body.theme-blue { --bg: #0a192f; --card: #172a45; --accent: #64ffda; }
-body.theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; }
-
-/* 既存のbody設定を上書きして変数を適用 */
-body { 
-    background: var(--bg) !important; 
-    transition: background 0.3s ease; 
-}
-
-/* ヘッダー周りのレイアウト調整 */
-.header-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-/* テーマ切り替えボタンの見た目 */
-.theme-select button {
-    padding: 6px 12px;
-    margin-left: 5px;
-    background: #30363d;
-    color: white;
-    border: 1px solid #444;
-    border-radius: 4px;
-    font-size: 12px;
-}
-.theme-select button:hover { background: #444; }
-
-/* 編集画面のカード内：状況タグとダメージタグ */
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.situation-tag {
-    background: #30363d;
-    color: #c9d1d9;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75em;
-    border: 1px solid #444;
-}
-
-.damage-tag {
-    color: var(--accent);
-    font-weight: bold;
-    font-size: 0.9em;
-    margin-left: auto; /* 右端に寄せる */
-}
-
-/* 保存済みルートのテキスト */
-.route-text {
-    background: rgba(0,0,0,0.2);
-    padding: 10px;
-    border-radius: 6px;
-    color: #e6edf3;
-    word-break: break-all;
-}
-
-/* 既存のカード類にもテーマの色を適用 */
-.standingBtn, .combo-card, .combo-display, #combo, .category.highlight {
-    background: var(--card) !important;
-}
+.combo-card { background: var(--card); border: 1px solid #30363d; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+.situation-tag { background: #30363d; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; }
+.damage-tag { color: var(--accent); margin-left: auto; }
+.card-header { display: flex; align-items: center; gap: 10px; }
+.btn-undo { background: #d29922; }
+.btn-clear, .btn-delete { background: #f85149; }
+.btn-save, .btn-copy { background: #238636; }
+button { border: none; color: white; padding: 8px 15px; border-radius: 4px; font-weight: bold; }
+input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 8px; border-radius: 4px; }
