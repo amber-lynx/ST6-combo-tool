@@ -19,8 +19,9 @@ function getIcon(name){
 // 技データ
 const moves = {
     standing:[
-        {name:"弱P", num:1},{name:"中P", num:2},{name:"強P", num:3},
-        {name:"弱K", num:1},{name:"中K", num:2},{name:"強K", num:3}
+        {name:"弱P", num:7},{name:"中P", num:8},{name:"強P", num:9},
+        {name:"弱K", num:4},{name:"中K", num:5},{name:"強K", num:6},
+        {name:"前J", num:1},{name:"前J中P", num:2},{name:"前J中K", num:3}
     ],
     special:[
         {name:"武神旋風脚", cmd:"214K"},
@@ -38,14 +39,20 @@ const moves = {
             {name:"胴刎ね", cmd:"弱K"},
             {name:"影すくい", cmd:"中K"},
             {name:"首狩り", cmd:"強K"},
+            {name:"弧空", followups:[
+                {name:"武神イズナ落とし", cmd:"P"},
+                {name:"武神鉾刃脚", cmd:"K"}
+            ]}
         ]},
         {name:"疾駆け（OD）", cmd:"214KK", followups:[
             {name:"急停止", cmd:"P"},
             {name:"胴刎ね", cmd:"弱K"},
             {name:"影すくい", cmd:"中K"},
             {name:"首狩り", cmd:"強K"},
-            {name:"武神イズナ落とし", cmd:"P"},
-            {name:"武神鉾刃脚", cmd:"K"}
+            {name:"弧空", followups:[
+                {name:"武神イズナ落とし", cmd:"P"},
+                {name:"武神鉾刃脚", cmd:"K"}
+            ]}
         ]},
         {name:"召雷細工", followups:[
             {name:"細工手裏剣", cmd:"↓↓P"},
@@ -84,7 +91,6 @@ function drawMoves(){
     let html="";
     html+=drawStanding();
     html+=drawCategory("Special", moves.special, 2);
-    html+=`<div class="category"><h3>派生</h3><div id="followupsText">派生技なし</div></div>`;
     html+=drawCategory("特殊技", moves.unique);
     html+=drawCategory("通常投げ", moves.throw);
     html+=drawCategory("共通システム", moves.system);
@@ -99,7 +105,7 @@ function drawStanding(){
         html+=`
         <button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
             <img src="${icon}">
-            <span>${m.name}【${m.num}】</span>
+            <span>${m.name}${m.num?`【${m.num}】`:""}</span>
         </button>`;
     });
     html+=`</div></div>`;
@@ -116,7 +122,6 @@ function drawCategory(title, list, cols=1){
     return html;
 }
 
-// 技追加
 function addMove(m){
     combo.push(m);
     update();
@@ -136,7 +141,6 @@ function showFollow(list){
     document.getElementById("followupsText").innerHTML=html;
 }
 
-// コンボ更新
 function update(){
     let html="";
     combo.forEach((m,i)=>{
@@ -147,14 +151,12 @@ function update(){
     document.getElementById("combo").innerHTML=html;
 }
 
-// クリア
 function clearCombo(){
     combo=[];
     update();
     document.getElementById("followupsText").innerText="派生技なし";
 }
 
-// コンボ登録
 function saveComboRoute(){
     const name = document.getElementById("comboName").value.trim();
     const category = document.getElementById("comboCategory").value.trim();
