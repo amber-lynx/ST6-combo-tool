@@ -20,14 +20,22 @@ button{
 background:#21262d;
 border:none;
 color:white;
-padding:14px 18px;
+
+width:260px;      /* 横長にする */
+height:70px;      /* 高さ */
+
+padding:10px 16px;
 margin:6px;
+
 border-radius:8px;
 cursor:pointer;
-display:inline-flex;
+
+display:flex;     /* 横並び */
 align-items:center;
-gap:8px;
-font-size:16px;
+justify-content:flex-start;
+
+gap:12px;
+font-size:18px;
 }
 
 button:hover{
