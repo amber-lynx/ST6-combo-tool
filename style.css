@@ -16,11 +16,18 @@ border-radius:10px;
 margin-bottom:15px;
 }
 
+.buttonGrid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+max-width:420px;
+}
+
 button{
 background:#21262d;
 border:none;
 color:white;
-padding:10px;
+padding:8px;
 border-radius:8px;
 cursor:pointer;
 
@@ -36,15 +43,13 @@ button:hover{
 background:#30363d;
 }
 
-.buttonGrid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-max-width:500px;
+.icon{
+height:28px;
 }
 
-.icon{
-height:100px;
+.command{
+opacity:0.6;
+font-size:12px;
 }
 
 .comboLine{
@@ -62,8 +67,4 @@ gap:4px;
 .arrow{
 margin:0 6px;
 opacity:0.5;
-}
-
-.category{
-margin-top:20px;
 }
