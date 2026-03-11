@@ -1,42 +1,39 @@
-// 編集・削除用スクリプト
-function drawSavedRoutes(){
+document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("selectedTheme") || "dark";
+    document.body.className = 'theme-' + savedTheme;
+    renderSavedList();
+});
+
+function renderSavedList() {
+    const container = document.getElementById("savedRoutes");
+    const saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
+    if (saved.length === 0) { container.innerHTML = "<p>保存されたコンボはありません。</p>"; return; }
+
+    container.innerHTML = saved.reverse().map(item => `
+        <div class="combo-card">
+            <div class="combo-info">
+                <div class="card-header">
+                    <span class="situation-tag">${escapeHtml(item.situation || '中央')}</span>
+                    <strong>${escapeHtml(item.name)}</strong>
+                    <span class="damage-tag">${item.damage || 0} dmg</span>
+                </div>
+                <p class="route-text">${item.route.join(" → ")}</p>
+            </div>
+            <div class="combo-actions">
+                <button class="copy-btn" onclick="copyText('${item.route.join(" > ")}')">コピー</button>
+                <button class="del-btn" onclick="deleteCombo(${item.id})">削除</button>
+            </div>
+        </div>
+    `).join("");
+}
+
+function deleteCombo(id) {
+    if (!confirm("削除しますか？")) return;
     let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    let html = "";
-    if(saved.length === 0){
-        html = "<p>登録されたコンボはありません</p>";
-    } else {
-        saved.forEach((s, index) => {
-            html += `<div style="margin-bottom:8px; padding:6px; border:1px solid #444; border-radius:6px;">
-                <b>${index+1}. ${s.name}</b> : ${s.route.join(" → ")}
-                <button onclick="editRoute(${index})">編集</button>
-                <button onclick="deleteRoute(${index})">削除</button>
-            </div>`;
-        });
-    }
-    document.getElementById("savedRoutes").innerHTML = html;
+    saved = saved.filter(item => item.id !== id);
+    localStorage.setItem("comboRoutes", JSON.stringify(saved));
+    renderSavedList();
 }
 
-// 削除
-function deleteRoute(index){
-    if(confirm("本当に削除しますか？")){
-        let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-        saved.splice(index,1);
-        localStorage.setItem("comboRoutes", JSON.stringify(saved));
-        drawSavedRoutes();
-    }
-}
-
-// 編集
-function editRoute(index){
-    let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    const route = saved[index];
-
-    // 編集対象データを localStorage に格納
-    localStorage.setItem("editCombo", JSON.stringify({index:index, route:route}));
-
-    // index.html に遷移して編集モード
-    window.location.href = "index.html";
-}
-
-// 初期描画
-drawSavedRoutes();
+function copyText(text) { navigator.clipboard.writeText(text); alert("コピーしました！"); }
+function escapeHtml(str) { const p = document.createElement("p"); p.textContent = str; return p.innerHTML; }
