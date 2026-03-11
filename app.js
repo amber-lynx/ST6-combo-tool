@@ -6,18 +6,20 @@ const iconMap = {
 };
 
 const moves = {
+    // 立ち攻撃
     standing: [
-        { name: "弱P", num: 7 }, { name: "中P", num: 8 }, { name: "強P", num: 9 },
-        { name: "弱K", num: 4 }, { name: "中K", num: 5 }, { name: "強K", num: 6 },
+        { name: "弱P", num: 7, cmd: "LP" }, { name: "中P", num: 8, cmd: "MP" }, { name: "強P", num: 9, cmd: "HP" },
+        { name: "弱K", num: 4, cmd: "LK" }, { name: "中K", num: 5, cmd: "MK" }, { name: "強K", num: 6, cmd: "HK" },
+    ],
+    // しゃがみ攻撃（キンバリーには必須！）
+    crouching: [
+        { name: "屈弱P", cmd: "2LP" }, { name: "屈中P", cmd: "2MP" }, { name: "屈強P", cmd: "2HP" },
+        { name: "屈弱K", cmd: "2LK" }, { name: "屈中K", cmd: "2MK" }, { name: "屈強K", cmd: "2HK" },
     ],
     special: [
         { name: "武神旋風脚", cmd: "214K" },
-        { name: "武神旋風脚（OD）", cmd: "214KK" },
         { name: "流転一文字", cmd: "236P" },
-        { name: "流転一文字（OD）", cmd: "236PP" },
         { name: "彩隠形", cmd: "214P" },
-        { name: "彩隠形（OD）", cmd: "214PP" },
-        { name: "荒鵺捻り（J）", cmd: "236P" },
         { 
             name: "疾駆け", cmd: "214K", 
             followups: [
@@ -34,25 +36,14 @@ const moves = {
                 }
             ]
         },
-        { 
-            name: "細工手裏剣", cmd: "22P",
-            followups: [
-                { name: "爆発", cmd: "自動" }
-            ]
-        }
+        { name: "細工手裏剣", cmd: "22P" }
     ],
     unique: [
         { name: "水切り蹴り", cmd: "3中K" },
         { name: "風車", cmd: "4強K" },
         { name: "飛箭蹴", cmd: "6強K" },
         { name: "武神虎連牙", cmd: "MP>HP" },
-        { name: "武神天架拳", cmd: "LP>MP>HP>HK" },
-        { name: "武神獄鎖拳", cmd: "LP>MP>2HP>HK" }
-    ],
-    system: [
-        { name: "インパクト", cmd: "HP+HK" },
-        { name: "パリィ", cmd: "MP+MK" },
-        { name: "ラッシュ", cmd: "66" }
+        { name: "武神天架拳", cmd: "LP>MP>HP>HK" }
     ],
     sa: [
         { name: "SA1 武神乱拍手", cmd: "236236K" },
@@ -61,10 +52,8 @@ const moves = {
     ]
 };
 
-// 初期化
 document.addEventListener("DOMContentLoaded", () => {
     drawMoves();
-    displaySavedCombos();
 });
 
 function getIcon(name) {
@@ -75,136 +64,104 @@ function getIcon(name) {
 }
 
 function drawMoves() {
-    let html = "";
-    html += drawStanding();
-    html += drawCategory("必殺技", moves.special, 2);
-    html += `<div class="category"><h3>派生技</h3><div id="followupsContainer" class="followup-grid">派生技なし</div></div>`;
-    html += drawCategory("特殊技", moves.unique);
-    html += drawCategory("共通", moves.system);
-    html += drawCategory("SA", moves.sa);
-    document.getElementById("moves").innerHTML = html;
-}
+    const container = document.getElementById("moves");
+    if (!container) return;
 
-function drawStanding() {
-    let html = `<div class="category"><h3>通常技</h3><div class="standingGrid">`;
+    let html = "";
+    
+    // 通常技（立ち・しゃがみ）
+    html += `<div class="category"><h3>Normals (Stand/Crouch)</h3>`;
+    html += `<div class="standingGrid">`;
     moves.standing.forEach(m => {
-        let icon = getIcon(m.name);
-        html += `
-        <button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
-            <img src="${icon}" onerror="this.style.display='none'">
+        html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
+            <img src="${getIcon(m.name)}" onerror="this.style.display='none'">
             <span>${m.name}</span>
         </button>`;
+    });
+    moves.crouching.forEach(m => {
+        html += `<button class="standingBtn crouch" onclick='addMove(${JSON.stringify(m)})'>
+            <span>${m.name}</span>
+        </button>`;
+    });
+    html += `</div></div>`;
+
+    // 必殺技・派生・特殊技・SA
+    html += drawSection("Special Moves", moves.special);
+    html += `<div class="category highlight"><h3>Followup (派生)</h3><div id="followupList" class="followup-grid">選択可能な派生なし</div></div>`;
+    html += drawSection("Unique Attacks", moves.unique);
+    html += drawSection("Super Arts", moves.sa);
+    
+    container.innerHTML = html;
+}
+
+function drawSection(title, list) {
+    let html = `<div class="category"><h3>${title}</h3><div class="move-grid">`;
+    list.forEach(m => {
+        html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name} <small>${m.cmd || ''}</small></button>`;
     });
     html += `</div></div>`;
     return html;
 }
 
-function drawCategory(title, list, cols = 1) {
-    let html = `<div class="category"><h3>${title}</h3><div class="gridCols${cols}">`;
-    list.forEach(m => {
-        let cmd = m.cmd ? `<small>【${m.cmd}】</small>` : "";
-        html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name}${cmd}</button>`;
-    });
-    html += "</div></div>";
-    return html;
-}
-
+// 技追加：再帰的に派生を表示できるように改善
 function addMove(m) {
     combo.push(m);
     updateComboDisplay();
     
-    const container = document.getElementById("followupsContainer");
-    if (m.followups) {
-        showFollowups(m.followups);
+    const followupContainer = document.getElementById("followupList");
+    // もし選んだ技に派生があるなら、ボタンを表示
+    if (m.followups && m.followups.length > 0) {
+        followupContainer.innerHTML = m.followups.map(f => 
+            `<button class="followup-btn active" onclick='addMove(${JSON.stringify(f)})'>
+                ${f.name} <br><small>${f.cmd || ''}</small>
+            </button>`
+        ).join("");
     } else {
-        container.innerHTML = "派生なし";
+        // 派生がない技ならリセット
+        followupContainer.innerHTML = '<span class="none">選択可能な派生なし</span>';
     }
 }
 
-function showFollowups(list) {
-    const container = document.getElementById("followupsContainer");
-    container.innerHTML = "";
-    list.forEach(f => {
-        const btn = document.createElement("button");
-        let cmd = f.cmd ? `【${f.cmd}】` : "";
-        btn.innerHTML = `${f.name}<br>${cmd}`;
-        btn.className = "followup-btn";
-        btn.onclick = () => addMove(f);
-        container.appendChild(btn);
-    });
-}
-
+// コンボ表示：コマンドも一緒に表示して見やすく改善
 function updateComboDisplay() {
     const container = document.getElementById("combo");
+    if (!container) return;
+    
     container.innerHTML = combo.map((m, i) => `
-        <span class="comboMove" onclick="removeStep(${i})">
-            ${m.name}
+        <span class="combo-unit">
+            <span class="combo-name">${m.name}</span>
+            <small class="combo-cmd">${m.cmd || ''}</small>
             ${i < combo.length - 1 ? '<span class="arrow">→</span>' : ''}
         </span>
     `).join("");
 }
 
-// 1手戻る
 function undo() {
     combo.pop();
     updateComboDisplay();
-    document.getElementById("followupsContainer").innerHTML = "派生なし";
-}
-
-// 指定したステップを削除
-function removeStep(index) {
-    combo.splice(index, 1);
-    updateComboDisplay();
+    // 直前の技に合わせて派生表示を戻すのは複雑なので、Undo時は一度リセット
+    document.getElementById("followupList").innerHTML = '<span class="none">選択可能な派生なし</span>';
 }
 
 function clearCombo() {
     combo = [];
     updateComboDisplay();
-    document.getElementById("followupsContainer").innerHTML = "派生なし";
+    document.getElementById("followupList").innerHTML = '<span class="none">選択可能な派生なし</span>';
 }
 
-// 保存
 function saveComboRoute() {
     const name = document.getElementById("comboName").value.trim();
-    const category = document.getElementById("comboCategory") ? document.getElementById("comboCategory").value.trim() : "通常";
-    
-    if (!name || combo.length === 0) {
-        alert("名前とコンボを入力してください");
-        return;
-    }
-    
-    let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
+    if (!name || combo.length === 0) return alert("名前と内容を入力してください");
+
+    const saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
     saved.push({
         id: Date.now(),
         name: name,
-        category: category,
-        route: combo.map(c => c.name)
+        route: combo.map(c => c.name),
+        display: combo.map(c => c.name).join(" > ")
     });
-    
     localStorage.setItem("comboRoutes", JSON.stringify(saved));
+    alert("保存完了！");
+    clearCombo();
     document.getElementById("comboName").value = "";
-    alert("保存しました！");
-    displaySavedCombos();
-}
-
-// 保存済みリスト表示
-function displaySavedCombos() {
-    const container = document.getElementById("savedList");
-    if (!container) return;
-    
-    const saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    container.innerHTML = saved.reverse().map(item => `
-        <div class="saved-item">
-            <strong>${item.name} (${item.category})</strong>
-            <p>${item.route.join(" > ")}</p>
-            <button onclick="deleteCombo(${item.id})">削除</button>
-        </div>
-    `).join("");
-}
-
-function deleteCombo(id) {
-    let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
-    saved = saved.filter(item => item.id !== id);
-    localStorage.setItem("comboRoutes", JSON.stringify(saved));
-    displaySavedCombos();
 }
