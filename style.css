@@ -31,3 +31,11 @@ button { cursor: pointer; transition: 0.2s; border: none; font-weight: bold; bor
 .btn-save { background: #238636; }
 .main-controls { display: flex; gap: 10px; margin-bottom: 15px; }
 input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 10px; border-radius: 4px; width: 200px; }
+.status-bar { display: flex; gap: 10px; margin-bottom: 10px; justify-content: flex-end; }
+.gauge-badge { background: #1c1f26; border: 1px solid #58a6ff; padding: 5px 10px; border-radius: 5px; color: #58a6ff; font-weight: bold; }
+.btn-toggle { background: #30363d; padding: 5px 10px; border-radius: 5px; cursor: pointer; border: 1px solid #444; }
+.btn-toggle.active { background: #d29922; border-color: #ffeb3b; }
+.od-active { border: 2px solid #d29922 !important; color: #ffeb3b !important; }
+.memo { font-size: 0.85em; color: #aaa; margin: 5px 0; background: rgba(255,255,0,0.05); padding: 5px; }
+.btn-video { background: #ff4444; margin-right: 10px; }
+.standingBtn small { display: block; font-size: 0.7em; color: #8b949e; margin-top: 2px; }
