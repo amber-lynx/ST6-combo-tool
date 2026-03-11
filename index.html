@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 
 <meta charset="UTF-8">
 <title>スト6 コンボメーカー</title>
+
 <link rel="stylesheet" href="style.css">
 
 </head>
+
 
 <body>
 
 <h1>スト6 コンボメーカー（キンバリー）</h1>
 
 <div class="panel">
+
 ダメージ <span id="damage">0</span>
-フレーム <span id="frame">0</span>
+
+</div>
+
+<div class="panel">
+
+表示切替  
+<button onclick="setNotation('arrow')">矢印</button>
+<button onclick="setNotation('num')">数字</button>
+
 </div>
 
 <div id="combo" class="comboLine"></div>
@@ -22,6 +34,7 @@
 <button onclick="clearCombo()">クリア</button>
 
 <h2>技一覧</h2>
+
 <div id="moves"></div>
 
 <h2>派生</h2>
