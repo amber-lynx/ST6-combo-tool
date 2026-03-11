@@ -10,7 +10,6 @@
 
 <h1>Kimberly Combo Tool</h1>
 
-<!-- ページ切替プルダウン -->
 <div class="pageSelect">
     <label>ページ切替：
         <select id="pageSelector" onchange="switchPage()">
@@ -21,13 +20,13 @@
 </div>
 
 <div class="panel">
-    <input type="text" id="comboName" placeholder="コンボ名を入力">
+    <input type="text" id="comboName" placeholder="ルート名（例：端攻め用）">
+    <input type="text" id="comboCategory" placeholder="カテゴリ（例：中央戦用）">
     <button onclick="saveComboRoute()">登録</button>
     <button onclick="clearCombo()">CLEAR</button>
 </div>
 
 <div id="combo" class="comboLine"></div>
-
 <div id="moves"></div>
 
 <div class="category">
@@ -36,28 +35,11 @@
 </div>
 
 <script src="app.js"></script>
-
 <script>
-// プルダウン切替
 function switchPage(){
     const sel = document.getElementById("pageSelector");
     window.location.href = sel.value;
 }
-
-// 編集用データ読み込み
-window.addEventListener("load", function(){
-    const editData = JSON.parse(localStorage.getItem("editCombo") || "null");
-    if(editData){
-        document.getElementById("comboName").value = editData.route.name;
-        combo = editData.route.route.map(name => ({name:name}));
-        update();
-        document.getElementById("followupsText").innerText = "派生技なし";
-        // 上書き保存用に index を保持
-        localStorage.setItem("editIndex", editData.index);
-        localStorage.removeItem("editCombo");
-    }
-});
 </script>
-
 </body>
 </html>
