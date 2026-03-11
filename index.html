@@ -13,16 +13,23 @@ font-family:sans-serif;
 padding:20px;
 }
 
-h2{
-margin-top:30px;
+h1{
+margin-bottom:10px;
+}
+
+.panel{
+background:#161b22;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
 }
 
 button{
-background:#161b22;
+background:#21262d;
 color:white;
-border:1px solid #30363d;
-padding:10px;
-margin:5px;
+border:none;
+padding:10px 14px;
+margin:4px;
 border-radius:6px;
 cursor:pointer;
 }
@@ -33,20 +40,26 @@ background:#30363d;
 
 #combo{
 font-size:22px;
-margin:20px 0;
+margin:10px 0;
 }
 
-.panel{
-background:#161b22;
-padding:15px;
-border-radius:10px;
+.category{
+margin-top:20px;
+}
+
+.follow{
 margin-top:10px;
 }
 
 .obs{
 background:black;
-font-size:28px;
+font-size:32px;
 padding:20px;
+}
+
+.mobile button{
+padding:14px;
+font-size:16px;
 }
 
 </style>
@@ -59,13 +72,11 @@ padding:20px;
 
 <div class="panel">
 
-<div>Damage : <span id="damage">0</span></div>
-<div>Frame : <span id="frame">0</span></div>
-<div>Spray : <span id="spray">2</span></div>
+Damage : <span id="damage">0</span>  
+Frame : <span id="frame">0</span>  
+Spray : <span id="spray">2</span>
 
 </div>
-
-<h2>Combo</h2>
 
 <div id="combo"></div>
 
@@ -75,7 +86,7 @@ padding:20px;
 
 <div id="moves"></div>
 
-<div id="followups"></div>
+<div id="followups" class="follow"></div>
 
 <h2>Saved Combos</h2>
 
@@ -90,48 +101,76 @@ let spray=2
 
 const moves={
 
-normal:[
-{name:"しゃがみ強P",damage:900,frame:8},
-{name:"立中P",damage:600,frame:6}
+standing:[
+{name:"立LP",damage:300,frame:4},
+{name:"立MP",damage:600,frame:6},
+{name:"立HP",damage:900,frame:8},
+
+{name:"立LK",damage:300,frame:4},
+{name:"立MK",damage:700,frame:7},
+{name:"立HK",damage:900,frame:9}
+],
+
+crouching:[
+{name:"しゃがみLP",damage:300,frame:4},
+{name:"しゃがみMP",damage:600,frame:6},
+{name:"しゃがみHP",damage:900,frame:8},
+
+{name:"しゃがみLK",damage:300,frame:4},
+{name:"しゃがみMK",damage:700,frame:7},
+{name:"しゃがみHK",damage:900,frame:9}
+],
+
+movement:[
+{name:"前ステップ",damage:0,frame:16},
+{name:"DR",damage:0,frame:8}
 ],
 
 special:[
 
-{
-name:"流転",
-damage:800,
-frame:10
-},
+{name:"流転",damage:800,frame:10},
 
 {
 name:"疾駆け",
 damage:0,
 frame:18,
 followups:[
+
 {name:"急停止",button:"P",damage:0,frame:5},
+
 {name:"胴刎ね",button:"LK",damage:900,frame:12},
+
 {name:"影すくい",button:"MK",damage:1000,frame:14},
+
 {name:"首狩り",button:"HK",damage:1100,frame:16},
+
 {name:"弧空",branch:true}
+
 ]
 },
 
 {
 name:"弧空",
 followups:[
+
 {name:"武神イズナ落とし",button:"P",damage:1600,frame:20},
+
 {name:"武神鉾刃脚",button:"K",damage:1400,frame:18}
+
 ]
 },
 
 {
 name:"細工手裏剣",
-input:"↓↓P",
 spray:true,
 followups:[
+
 {name:"弱手裏剣",button:"LP",damage:400,frame:10},
+
 {name:"中手裏剣",button:"MP",damage:500,frame:10},
+
 {name:"強手裏剣",button:"HP",damage:600,frame:10}
+
 ]
 }
 
@@ -141,19 +180,40 @@ followups:[
 
 function drawMoves(){
 
-let html="<h2>Normal</h2>"
+let html=""
 
-moves.normal.forEach(m=>{
-html+=`<button onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`
+html+="<div class='category'><h2>Standing</h2>"
+moves.standing.forEach(m=>{
+html+=button(m)
 })
+html+="</div>"
 
-html+="<h2>Special</h2>"
+html+="<div class='category'><h2>Crouching</h2>"
+moves.crouching.forEach(m=>{
+html+=button(m)
+})
+html+="</div>"
 
+html+="<div class='category'><h2>Movement</h2>"
+moves.movement.forEach(m=>{
+html+=button(m)
+})
+html+="</div>"
+
+html+="<div class='category'><h2>Special</h2>"
 moves.special.forEach(m=>{
-html+=`<button onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`
+html+=button(m)
 })
+html+="</div>"
 
 document.getElementById("moves").innerHTML=html
+
+}
+
+function button(m){
+
+return `<button onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`
+
 }
 
 drawMoves()
@@ -162,16 +222,14 @@ function addMove(m){
 
 combo.push(m.name)
 
-if(m.damage) damage+=m.damage
-if(m.frame) frame+=m.frame
+damage+=m.damage||0
+frame+=m.frame||0
 
 if(m.spray) spray--
 
 update()
 
-if(m.followups){
-showFollow(m.followups)
-}
+if(m.followups) showFollow(m.followups)
 
 }
 
@@ -194,6 +252,7 @@ html+=`<button onclick='addMove(${JSON.stringify(f)})'>${f.button} ${f.name}</bu
 })
 
 document.getElementById("followups").innerHTML=html
+
 }
 
 function branch(name){
@@ -207,7 +266,6 @@ showFollow(m.followups)
 function update(){
 
 document.getElementById("combo").innerText=combo.join(" → ")
-
 document.getElementById("damage").innerText=damage
 document.getElementById("frame").innerText=frame
 document.getElementById("spray").innerText=spray
@@ -229,10 +287,7 @@ function saveCombo(){
 
 let saved=JSON.parse(localStorage.getItem("combos")||"[]")
 
-saved.push({
-combo:combo,
-damage:damage
-})
+saved.push({combo:combo,damage:damage})
 
 localStorage.setItem("combos",JSON.stringify(saved))
 
@@ -247,7 +302,7 @@ let saved=JSON.parse(localStorage.getItem("combos")||"[]")
 let html=""
 
 saved.forEach(s=>{
-html+=`<div>${s.combo.join(" → ")} (${s.damage})</div>`
+html+=`<div>${s.combo.join(" → ")} (Damage ${s.damage})</div>`
 })
 
 document.getElementById("saved").innerHTML=html
