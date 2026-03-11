@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 <meta charset="UTF-8">
 <title>スト6 コンボメーカー（キンバリー）</title>
@@ -10,31 +11,15 @@
 
 <h1>スト6 コンボメーカー（キンバリー）</h1>
 
-<!-- コンボ表示 -->
 <div id="combo" class="comboLine"></div>
+
 <button onclick="clearCombo()">クリア</button>
 
 <h2>技一覧</h2>
 <div id="moves"></div>
 
-<!-- Special直下のみ派生表示 -->
-<div id="followupsContainer">
 <h2>派生</h2>
-<div id="followupsText">派生技なし</div>
-</div>
-
-<hr>
-
-<!-- コンボ登録 -->
-<h2>コンボルート登録</h2>
-<div class="panel">
-<label>名前：<input type="text" id="comboName" placeholder="例：連携コンボ"></label><br>
-<button onclick="saveComboRoute()">登録</button>
-<button onclick="cancelComboRoute()">キャンセル</button>
-</div>
-
-<h3>登録済みコンボルート</h3>
-<div id="savedRoutes"></div>
+<div id="followups"></div>
 
 <script src="app.js"></script>
 </body>
