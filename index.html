@@ -2,49 +2,264 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SF6 Combo Tool</title>
+<title>Kimberly Combo Tool</title>
 
 <style>
+
 body{
 background:#0e1117;
 color:white;
 font-family:sans-serif;
-text-align:center;
-padding:40px;
+padding:20px;
+}
+
+h2{
+margin-top:30px;
 }
 
 button{
-padding:10px 20px;
+background:#161b22;
+color:white;
+border:1px solid #30363d;
+padding:10px;
 margin:5px;
-font-size:18px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#30363d;
 }
 
 #combo{
-margin-top:30px;
 font-size:22px;
+margin:20px 0;
 }
+
+.panel{
+background:#161b22;
+padding:15px;
+border-radius:10px;
+margin-top:10px;
+}
+
+.obs{
+background:black;
+font-size:28px;
+padding:20px;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h1>SF6 Combo Tool</h1>
+<h1>Kimberly Combo Tool</h1>
 
-<button onclick="add('しゃがみ強P')">しゃがみ強P</button>
-<button onclick="add('流転')">流転</button>
-<button onclick="add('疾駆け')">疾駆け</button>
-<button onclick="add('影すくい')">影すくい</button>
+<div class="panel">
+
+<div>Damage : <span id="damage">0</span></div>
+<div>Frame : <span id="frame">0</span></div>
+<div>Spray : <span id="spray">2</span></div>
+
+</div>
+
+<h2>Combo</h2>
 
 <div id="combo"></div>
+
+<button onclick="clearCombo()">CLEAR</button>
+<button onclick="saveCombo()">SAVE</button>
+<button onclick="toggleOBS()">OBS MODE</button>
+
+<div id="moves"></div>
+
+<div id="followups"></div>
+
+<h2>Saved Combos</h2>
+
+<div id="saved"></div>
 
 <script>
 
 let combo=[]
+let damage=0
+let frame=0
+let spray=2
 
-function add(move){
-combo.push(move)
-document.getElementById("combo").innerHTML=combo.join(" → ")
+const moves={
+
+normal:[
+{name:"しゃがみ強P",damage:900,frame:8},
+{name:"立中P",damage:600,frame:6}
+],
+
+special:[
+
+{
+name:"流転",
+damage:800,
+frame:10
+},
+
+{
+name:"疾駆け",
+damage:0,
+frame:18,
+followups:[
+{name:"急停止",button:"P",damage:0,frame:5},
+{name:"胴刎ね",button:"LK",damage:900,frame:12},
+{name:"影すくい",button:"MK",damage:1000,frame:14},
+{name:"首狩り",button:"HK",damage:1100,frame:16},
+{name:"弧空",branch:true}
+]
+},
+
+{
+name:"弧空",
+followups:[
+{name:"武神イズナ落とし",button:"P",damage:1600,frame:20},
+{name:"武神鉾刃脚",button:"K",damage:1400,frame:18}
+]
+},
+
+{
+name:"細工手裏剣",
+input:"↓↓P",
+spray:true,
+followups:[
+{name:"弱手裏剣",button:"LP",damage:400,frame:10},
+{name:"中手裏剣",button:"MP",damage:500,frame:10},
+{name:"強手裏剣",button:"HP",damage:600,frame:10}
+]
+}
+
+]
+
+}
+
+function drawMoves(){
+
+let html="<h2>Normal</h2>"
+
+moves.normal.forEach(m=>{
+html+=`<button onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`
+})
+
+html+="<h2>Special</h2>"
+
+moves.special.forEach(m=>{
+html+=`<button onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`
+})
+
+document.getElementById("moves").innerHTML=html
+}
+
+drawMoves()
+
+function addMove(m){
+
+combo.push(m.name)
+
+if(m.damage) damage+=m.damage
+if(m.frame) frame+=m.frame
+
+if(m.spray) spray--
+
+update()
+
+if(m.followups){
+showFollow(m.followups)
+}
+
+}
+
+function showFollow(list){
+
+let html="<h3>Followups</h3>"
+
+list.forEach(f=>{
+
+if(f.branch){
+
+html+=`<button onclick="branch('弧空')">弧空</button>`
+
+}else{
+
+html+=`<button onclick='addMove(${JSON.stringify(f)})'>${f.button} ${f.name}</button>`
+
+}
+
+})
+
+document.getElementById("followups").innerHTML=html
+}
+
+function branch(name){
+
+let m=moves.special.find(v=>v.name==name)
+
+showFollow(m.followups)
+
+}
+
+function update(){
+
+document.getElementById("combo").innerText=combo.join(" → ")
+
+document.getElementById("damage").innerText=damage
+document.getElementById("frame").innerText=frame
+document.getElementById("spray").innerText=spray
+
+}
+
+function clearCombo(){
+
+combo=[]
+damage=0
+frame=0
+spray=2
+
+update()
+
+}
+
+function saveCombo(){
+
+let saved=JSON.parse(localStorage.getItem("combos")||"[]")
+
+saved.push({
+combo:combo,
+damage:damage
+})
+
+localStorage.setItem("combos",JSON.stringify(saved))
+
+drawSaved()
+
+}
+
+function drawSaved(){
+
+let saved=JSON.parse(localStorage.getItem("combos")||"[]")
+
+let html=""
+
+saved.forEach(s=>{
+html+=`<div>${s.combo.join(" → ")} (${s.damage})</div>`
+})
+
+document.getElementById("saved").innerHTML=html
+
+}
+
+drawSaved()
+
+function toggleOBS(){
+
+document.body.classList.toggle("obs")
+
 }
 
 </script>
