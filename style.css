@@ -90,3 +90,86 @@ body.light {
     padding: 15px;
     margin-bottom: 12px;
 }
+/* コンボ表示エリアをカッコよく */
+.combo-display {
+    background: #161b22;
+    border: 2px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 80px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ボタンの共通スタイル */
+button {
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+    border: none;
+    border-radius: 4px;
+}
+
+/* Undoボタン（オレンジ） */
+.btn-undo { background: #d29922; color: white; padding: 10px 20px; }
+/* Clearボタン（赤） */
+.btn-clear { background: #f85149; color: white; padding: 10px 20px; }
+/* 保存ボタン（緑） */
+.btn-save { background: #238636; color: white; padding: 10px 30px; }
+
+/* 入力欄（黒板風） */
+input[type="text"] {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    width: 250px;
+}
+
+/* 必殺技や特殊技ボタンを通常技と区別しやすくする */
+.move-grid button, .followup-btn {
+    background: #21262d;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%; /* グリッド内で幅を揃える */
+}
+
+.move-grid button:hover, .followup-btn:hover {
+    background: #30363d;
+    border-color: #8b949e;
+}
+
+/* 派生技エリア（highlight）を少し目立たせる */
+.category.highlight {
+    border: 1px solid #d29922; /* Undoボタンと同じ色で「注目」 */
+    padding: 10px;
+    border-radius: 8px;
+    background: #1c1f26;
+}
+
+/* コンボの中身のコマンドを小さく薄く（app.jsの最高版に対応） */
+.combo-cmd {
+    font-size: 0.75em;
+    color: #8b949e;
+    margin-left: 2px;
+    display: block; /* 技名の下にコマンドを表示 */
+}
+
+/* スマホ等で入力欄がはみ出さないように */
+input[type="text"] {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* 派生なしの時の文字色 */
+.none {
+    color: #484f58;
+    font-style: italic;
+    font-size: 0.9em;
+}
