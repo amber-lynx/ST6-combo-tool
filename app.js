@@ -1,4 +1,5 @@
 let combo = [];
+let isODMode = false; // ODモードの状態
 
 const iconMap = {
     "弱P": "icons/LP.png", "中P": "icons/MP.png", "強P": "icons/HP.png",
@@ -14,35 +15,22 @@ const moves = {
         { name: "屈弱P", cmd: "2LP" }, { name: "屈中P", cmd: "2MP" }, { name: "屈強P", cmd: "2HP" },
         { name: "屈弱K", cmd: "2LK" }, { name: "屈中K", cmd: "2MK" }, { name: "屈強K", cmd: "2HK" },
     ],
+    // ゲージ専用アクション
     drive: [
         { name: "ドライブインパクト", cmd: "HP+HK" },
         { name: "ドライブリバーサル", cmd: "6+HP+HK" },
         { name: "キャンセルラッシュ", cmd: "66" },
-        { name: "OD武神旋風脚", cmd: "214KK" },
-        { name: "OD流転一文字", cmd: "236PP" },
-        { name: "OD彩隠形", cmd: "214PP" },
-        { name: "OD荒鵺捻り", cmd: "j236PP" },
-        { name: "OD空中武神旋風脚", cmd: "j214KK" },
-        { 
-            name: "OD疾駆け", cmd: "214KK", 
-            followups: [
-                { name: "急停止", cmd: "P" }, { name: "胴刎ね", cmd: "K" },
-                { name: "影すくい", cmd: "2K" }, { name: "首狩り", cmd: "6K" },
-                { name: "弧空", cmd: "8", followups: [
-                    { name: "武神イズナ落とし", cmd: "P" }, { name: "武神鉾刃脚", cmd: "K" }
-                ]}
-            ]
-        }
     ],
+    // 通常とODを統合（hasOD: true の技はスイッチで切り替わる）
     special: [
-        { name: "武神旋風脚", cmd: "214K" },
-        { name: "流転一文字", cmd: "236P" },
-        { name: "彩隠形", cmd: "214P" },
+        { name: "武神旋風脚", cmd: "214K", odCmd: "214KK", hasOD: true },
+        { name: "流転一文字", cmd: "236P", odCmd: "236PP", hasOD: true },
+        { name: "彩隠形", cmd: "214P", odCmd: "214PP", hasOD: true },
         { name: "召雷細工", cmd: "22P" },
-        { name: "荒鵺捻り", cmd: "j236P" },
-        { name: "空中武神旋風脚", cmd: "j214K" },
+        { name: "荒鵺捻り", cmd: "j236P", odCmd: "j236PP", hasOD: true },
+        { name: "空中武神旋風脚", cmd: "j214K", odCmd: "j214KK", hasOD: true },
         { 
-            name: "疾駆け", cmd: "214K", 
+            name: "疾駆け", cmd: "214K", odCmd: "214KK", hasOD: true,
             followups: [
                 { name: "急停止", cmd: "P" }, { name: "胴刎ね", cmd: "K" },
                 { name: "影すくい", cmd: "2K" }, { name: "首狩り", cmd: "6K" },
@@ -72,6 +60,16 @@ document.addEventListener("DOMContentLoaded", () => {
     setTheme(localStorage.getItem("selectedTheme") || "dark");
 });
 
+// ODモード切り替え
+function toggleOD() {
+    isODMode = !isODMode;
+    const btn = document.getElementById("odSwitcher");
+    btn.classList.toggle("active", isODMode);
+    btn.innerHTML = isODMode ? "ODモード: ON 🔥" : "ODモード: OFF";
+    // 技リストを再描画（ボタンのテキストをOD版に変えるため）
+    drawMoves();
+}
+
 function setTheme(theme) {
     document.body.className = 'theme-' + theme;
     localStorage.setItem("selectedTheme", theme);
@@ -81,13 +79,25 @@ function drawMoves() {
     const container = document.getElementById("moves");
     if (!container) return;
     let html = "";
+    
+    // 通常技
     html += `<div class="category"><h3>Normals</h3><div class="standingGrid">`;
     moves.standing.forEach(m => { html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'><img src="${getIcon(m.name)}" onerror="this.style.display='none'"><span>${m.name}</span></button>`; });
     moves.crouching.forEach(m => { html += `<button class="standingBtn crouch" onclick='addMove(${JSON.stringify(m)})'><span>${m.name}</span></button>`; });
     html += `</div></div>`;
-    html += drawSection("Drive System (ゲージ消費)", moves.drive);
+
+    // 必殺技（ODモードなら名前を書き換えて表示）
+    html += `<div class="category"><h3>Special Moves</h3><div class="move-grid">`;
+    moves.special.forEach(m => {
+        let displayName = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
+        let displayCmd = (isODMode && m.hasOD) ? m.odCmd : m.cmd;
+        let activeClass = (isODMode && m.hasOD) ? "class='od-active'" : "";
+        html += `<button ${activeClass} onclick='addMove(${JSON.stringify(m)})'>${displayName} <small>${displayCmd || ''}</small></button>`;
+    });
+    html += `</div></div>`;
+
     html += `<div class="category highlight"><h3>Followup (派生技)</h3><div id="followupList" class="followup-grid">選択可能な派生なし</div></div>`;
-    html += drawSection("Special Moves", moves.special);
+    html += drawSection("Drive System", moves.drive);
     html += drawSection("Unique Attacks", moves.unique);
     html += drawSection("Super Arts", moves.sa);
     container.innerHTML = html;
@@ -106,8 +116,14 @@ function getIcon(name) {
 }
 
 function addMove(m) {
-    combo.push(m);
+    let finalMove = { ...m };
+    if (isODMode && m.hasOD) {
+        finalMove.name = "OD" + m.name;
+        finalMove.cmd = m.odCmd;
+    }
+    combo.push(finalMove);
     updateComboDisplay();
+    
     const followupContainer = document.getElementById("followupList");
     if (m.followups) {
         followupContainer.innerHTML = m.followups.map(f => `<button class="followup-btn active" onclick='addMove(${JSON.stringify(f)})'>${f.name} <br><small>${f.cmd || ''}</small></button>`).join("");
