@@ -1,5 +1,7 @@
 let combo=[]
 
+let notation="arrow"
+
 const iconMap={
 
 "弱P":"icons/LP.png",
@@ -21,11 +23,15 @@ return iconMap[key]
 
 }
 
-return null
+return ""
 
 }
 
 function convertCommand(cmd){
+
+if(!cmd) return ""
+
+if(notation==="arrow"){
 
 return cmd
 .replaceAll("236","↓↘→")
@@ -35,38 +41,52 @@ return cmd
 
 }
 
+return cmd
+
+}
+
+function setNotation(type){
+
+notation=type
+
+drawMoves()
+update()
+
+}
+
 const moves={
 
 standing:[
 
-{name:"立弱P"},
-{name:"立中P"},
-{name:"立強P"},
+{name:"弱P"},
+{name:"中P"},
+{name:"強P"},
 
-{name:"立弱K"},
-{name:"立中K"},
-{name:"立強K"}
+{name:"弱K"},
+{name:"中K"},
+{name:"強K"}
 
 ],
 
 special:[
 
-{name:"武神旋風脚【214K】"},
-{name:"武神旋風脚（OD）【214KK】"},
+{name:"武神旋風脚 214K"},
+{name:"武神旋風脚（OD）214KK"},
 
-{name:"空中武神旋風脚（前J）【214K】"},
-{name:"空中武神旋風脚（前JOD）【214KK】"},
+{name:"空中武神旋風脚（前J）214K"},
+{name:"空中武神旋風脚（OD）（前J）214KK"},
 
-{name:"流転一文字【236P】"},
-{name:"流転一文字（OD）【236PP】"},
+{name:"流転一文字 236P"},
+{name:"流転一文字（OD）236PP"},
 
-{name:"彩隠形【214P】"},
-{name:"彩隠形（OD）【214PP】"},
+{name:"彩隠形 214P"},
+{name:"彩隠形（OD）214PP"},
 
-{name:"荒鵺捻り（前J）【236P】"},
-{name:"荒鵺捻り（前JOD）【236PP】"},
+{name:"荒鵺捻り（前J）236P"},
+{name:"荒鵺捻り（OD）（前J）236PP"},
 
-{name:"疾駆け【214K】",
+{name:"疾駆け 214K",
+
 followups:[
 
 {name:"急停止 P"},
@@ -78,6 +98,7 @@ followups:[
 ]},
 
 {name:"召雷細工",
+
 followups:[
 
 {name:"細工手裏剣 ↓↓P"},
@@ -89,10 +110,11 @@ followups:[
 
 unique:[
 
-{name:"水切り蹴り【3中K】"},
-{name:"風車【4強K】"},
+{name:"水切り蹴り 3中K"},
+{name:"風車 4強K"},
 
-{name:"飛箭蹴【6強K】",
+{name:"飛箭蹴 6強K",
+
 followups:[
 
 {name:"↖"},
@@ -101,7 +123,7 @@ followups:[
 
 ]},
 
-{name:"肘落とし（前J）【2中P】"},
+{name:"肘落とし（前J）2中P"},
 
 {name:"武神虎連牙 中P＞強P"},
 {name:"武神天架拳 弱P＞中P＞強P＞強K"},
@@ -112,25 +134,25 @@ followups:[
 
 throw:[
 
-{name:"縄掛背負い【5or6＋弱P弱K】"},
-{name:"鍾打巴【4＋弱P弱K】"}
+{name:"縄掛背負い 6弱P弱K"},
+{name:"鍾打巴 4弱P弱K"}
 
 ],
 
 system:[
 
-{name:"ドライブインパクト【強P強K】"},
-{name:"ドライブリバーサル【強P強K】"},
-{name:"パリィ【中P中K】"},
-{name:"ドライブラッシュ【66】"}
+{name:"ドライブインパクト 強P強K"},
+{name:"ドライブリバーサル 強P強K"},
+{name:"パリィ 中P中K"},
+{name:"ドライブラッシュ 66"}
 
 ],
 
 sa:[
 
-{name:"武神乱拍手 SA1【236236K】"},
-{name:"武神天翔亢竜 SA2【214214P】"},
-{name:"武神顕現神楽 SA3【236236P】"}
+{name:"武神乱拍手 SA1 236236K"},
+{name:"武神天翔亢竜 SA2 214214P"},
+{name:"武神顕現神楽 SA3 236236P"}
 
 ]
 
@@ -140,58 +162,66 @@ function drawMoves(){
 
 let html=""
 
-html+=drawCategory("Standing",moves.standing,true)
+html+=drawStanding()
+
 html+=drawCategory("Special",moves.special)
+
+html+=`<div class="category"><h3>派生</h3>派生技は技選択後に表示</div>`
+
 html+=drawCategory("特殊技",moves.unique)
+
 html+=drawCategory("通常投げ",moves.throw)
+
 html+=drawCategory("共通システム",moves.system)
+
 html+=drawCategory("SA",moves.sa)
 
 document.getElementById("moves").innerHTML=html
 
 }
 
-function drawCategory(title,list,grid=false){
+function drawStanding(){
 
-let html=`<div class="category"><h3>${title}</h3>`
-
-if(grid){
+let html=`<div class="category"><h3>Standing</h3>`
 
 html+=`<div class="standingGrid">`
 
-list.forEach(m=>{
+moves.standing.forEach(m=>{
 
 let icon=getIcon(m.name)
 
 html+=`
+
 <button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
+
 <img src="${icon}">
+<span>${m.name}</span>
+
 </button>
+
 `
 
 })
 
-html+=`</div>`
+html+=`</div></div>`
 
-}else{
+return html
+
+}
+
+function drawCategory(title,list){
+
+let html=`<div class="category"><h3>${title}</h3>`
 
 list.forEach(m=>{
-
-let icon=getIcon(m.name)
-let img=""
-
-if(icon)
-img=`<img class="icon" src="${icon}">`
 
 html+=`
 <button onclick='addMove(${JSON.stringify(m)})'>
-${img}${m.name}
+${m.name}
 </button>
 `
 
 })
-
-}
 
 html+="</div>"
 
@@ -230,13 +260,7 @@ let html=""
 
 combo.forEach((m,i)=>{
 
-let icon=getIcon(m.name)
-let img=""
-
-if(icon)
-img=`<img class="icon" src="${icon}">`
-
-html+=`<span class="comboMove">${img}${m.name}</span>`
+html+=`<span class="comboMove">${m.name}</span>`
 
 if(i<combo.length-1)
 html+=`<span class="arrow">→</span>`
