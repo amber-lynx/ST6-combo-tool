@@ -11,7 +11,6 @@
     <h1>Kimberly Combo Tool</h1>
     <div class="header-controls">
         <div class="theme-select">
-            <span>テーマ:</span>
             <button onclick="setTheme('dark')">Dark</button>
             <button onclick="setTheme('blue')">Blue</button>
             <button onclick="setTheme('purple')">Purple</button>
@@ -27,13 +26,17 @@
 <main class="container">
     <section class="combo-section">
         <div id="combo" class="combo-display"><span class="placeholder">技を選択...</span></div>
-        <div class="combo-controls">
+        
+        <div class="main-controls">
+            <!-- OD切り替えスイッチ -->
+            <button id="odSwitcher" class="btn-od-toggle" onclick="toggleOD()">ODモード: OFF</button>
             <button class="btn-undo" onclick="undo()">1手戻る</button>
             <button class="btn-clear" onclick="clearCombo()">全消去</button>
         </div>
+
         <div class="save-area">
-            <input type="text" id="comboName" placeholder="コンボ名">
-            <button class="btn-save" onclick="saveComboRoute()">保存する</button>
+            <input type="text" id="comboName" placeholder="コンボ名（画面端など）">
+            <button class="btn-save" onclick="saveComboRoute()">保存</button>
         </div>
     </section>
     <section id="moves" class="moves-section"></section>
