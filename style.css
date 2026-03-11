@@ -48,3 +48,77 @@ body { background: var(--bg); color: white; font-family: sans-serif; padding: 20
 .btn-save { background: #238636; }
 button { border: none; color: white; padding: 10px 15px; border-radius: 4px; font-weight: bold; }
 input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 10px; border-radius: 4px; width: 200px; }
+
+/* --- ダメージ計算・ステータスバーの追加スタイル --- */
+
+/* ダメージ表示を右上に配置 */
+.status-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+/* ダメージバッジ：スト6の体力ゲージ減少をイメージ */
+.damage-badge {
+    background: #f85149; 
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(248, 81, 73, 0.4);
+    transition: all 0.2s ease;
+}
+
+/* ダメージが増えた時に少し弾むアニメーション */
+.damage-badge.flash {
+    transform: scale(1.1);
+    background: #ff7b72;
+}
+
+/* ボタンのホバーエフェクト共通 */
+button:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* Undoボタン（オレンジ色を際立たせる） */
+.btn-undo {
+    background: #d29922;
+    border-bottom: 3px solid #9e731a;
+}
+
+/* 保存ボタン（緑色を際立たせる） */
+.btn-save {
+    background: #238636;
+    border-bottom: 3px solid #1a6328;
+}
+
+/* 全消去ボタン（赤色を際立たせる） */
+.btn-clear {
+    background: #f85149;
+    border-bottom: 3px solid #b93a34;
+}
+
+/* 入力欄にフォーカスした時の色 */
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 5px var(--accent);
+}
+
+/* スマホ対応：横幅が狭い時にボタンを調整 */
+@media (max-width: 480px) {
+    .main-controls {
+        flex-direction: column;
+    }
+    input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
