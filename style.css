@@ -1,54 +1,92 @@
-.standingGrid{
-    display:grid;
-    grid-template-columns: repeat(3, auto);
-    grid-template-rows: repeat(3, auto);
-    gap:8px;
-}
-.standingBtn img{
-    width:60px;   /* アイコンサイズを変更する場所 */
-    height:60px;
-}
-.gridCols2{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap:6px;
-}
-.comboMove{
-    font-size:20px;
-    margin:0 4px;
-}
-.arrow{
-    margin:0 4px;
-    opacity:0.6;
+/* 基本設定：背景と文字色 */
+body {
+    background: #0e1117;
+    color: #ffffff;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    padding: 20px;
+    line-height: 1.6;
 }
 
-body{
-    background:#0e1117;
-    color:white;
-    font-family:sans-serif;
-    padding:20px;}
+/* ライトモード（bodyに.lightクラスがついた時用。現状の.darkと逆転させて整理） */
+body.light {
+    background: #f4f4f4;
+    color: #111111;
+}
 
-body.dark{
-    background:#f4f4f4;
-          color:#111;}
-
-.standingGrid{
-    display:grid;
-    grid-template-columns: repeat(3, auto);
+/* 通常技の6ボタン配置（3列 × 2段） */
+.standingGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* autoより1frの方が幅が揃って綺麗 */
     grid-template-rows: repeat(2, auto);
-    gap:8px;}
+    gap: 10px;
+    max-width: 300px; /* 広がりすぎ防止 */
+    margin-bottom: 20px;
+}
 
-.standingBtn img{
-    width:60px;
-    height:60px;} /* ここでアイコンサイズ変更 */
+/* 通常技ボタンの中身 */
+.standingBtn {
+    background: #1c1f26;
+    border: 1px solid #30363d;
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-.gridCols2{
-    display:grid;
+.standingBtn:hover {
+    background: #30363d;
+}
+
+/* アイコンサイズ（ここを変更する場所） */
+.standingBtn img {
+    width: 50px;  /* 60pxだとスマホで少し大きいかも？お好みで！ */
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+/* 必殺技などの2列グリッド */
+.gridCols2 {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap:6px;}
+    gap: 8px;
+    margin-bottom: 15px;
+}
 
-.comboMove{font-size:20px;
-           margin:0 4px;}
+/* コンボ表示エリア */
+#combo {
+    background: #161b22;
+    padding: 15px;
+    border-radius: 8px;
+    min-height: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid #30363d;
+}
 
-.arrow{margin:0 4px;
-       opacity:0.6;}
+.comboMove {
+    font-size: 18px;
+    font-weight: bold;
+    color: #58a6ff; /* 青色などで目立たせるとコンボ感が出る */
+}
+
+.arrow {
+    margin: 0 8px;
+    font-weight: bold;
+    color: #8b949e;
+    opacity: 0.8;
+}
+
+/* 編集画面のカード用追加スタイル */
+.combo-card {
+    background: #1c1f26;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
