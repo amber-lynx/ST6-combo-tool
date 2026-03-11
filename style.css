@@ -1,30 +1,50 @@
+/* 追加：ODトグルスイッチのスタイル */
+.main-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+
+.btn-od-toggle {
+    background: #21262d;
+    color: #8b949e;
+    border: 2px solid #30363d;
+    flex: 2; /* 他のボタンより少し大きく */
+}
+
+.btn-od-toggle.active {
+    background: #d29922; /* ドライブゲージ色 */
+    color: white;
+    border-color: #ffeb3b;
+    box-shadow: 0 0 15px rgba(210, 153, 34, 0.6);
+}
+
+/* ODモード時に技ボタンを光らせる */
+.od-active {
+    border: 1px solid #d29922 !important;
+    background: rgba(210, 153, 34, 0.1) !important;
+    color: #ffeb3b !important;
+}
+
+/* 既存の共通設定 */
 .theme-dark { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; }
 .theme-blue { --bg: #0a192f; --card: #172a45; --accent: #64ffda; }
 .theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; }
 
 body { background: var(--bg); color: white; font-family: sans-serif; padding: 20px; transition: 0.3s; }
 .header-controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
-.theme-select button { padding: 5px; margin-left: 5px; cursor: pointer; }
 
 .combo-display { background: var(--card); border: 2px solid #30363d; border-radius: 12px; padding: 20px; min-height: 60px; display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-.combo-unit { display: flex; flex-direction: column; align-items: center; }
+.combo-unit { display: flex; flex-direction: column; align-items: center; font-weight: bold; }
 .combo-cmd { font-size: 0.7em; color: #8b949e; }
 .arrow { margin: 0 5px; color: #58a6ff; }
 
 .standingGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 350px; margin-bottom: 20px; }
 .standingBtn { background: var(--card); border: 1px solid #30363d; color: white; padding: 10px; border-radius: 6px; cursor: pointer; }
-.standingBtn img { width: 40px; height: 40px; }
+.standingBtn img { width: 40px; height: 40px; margin-bottom: 5px; }
 
 .move-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px; }
-.move-grid button, .followup-btn { background: #21262d; color: white; border: 1px solid #30363d; padding: 10px; border-radius: 4px; cursor: pointer; }
+.move-grid button, .followup-btn { background: #21262d; color: white; border: 1px solid #30363d; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 14px; }
 .category.highlight { border: 1px solid #d29922; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
 
-.combo-card { background: var(--card); border: 1px solid #30363d; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-.situation-tag { background: #30363d; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; }
-.damage-tag { color: var(--accent); margin-left: auto; }
-.card-header { display: flex; align-items: center; gap: 10px; }
 .btn-undo { background: #d29922; }
-.btn-clear, .btn-delete { background: #f85149; }
-.btn-save, .btn-copy { background: #238636; }
-button { border: none; color: white; padding: 8px 15px; border-radius: 4px; font-weight: bold; }
-input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 8px; border-radius: 4px; }
+.btn-clear { background: #f85149; }
+.btn-save { background: #238636; }
+button { border: none; color: white; padding: 10px 15px; border-radius: 4px; font-weight: bold; }
+input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 10px; border-radius: 4px; width: 200px; }
