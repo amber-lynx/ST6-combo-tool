@@ -14,29 +14,30 @@ background:#161b22;
 padding:15px;
 border-radius:10px;
 margin-bottom:15px;
-}
-
-.buttonGrid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-max-width:420px;
+font-size:18px;
 }
 
 button{
+
 background:#21262d;
 border:none;
 color:white;
-padding:8px;
+
+padding:14px 18px;
+
+margin:6px;
+
 border-radius:8px;
+
 cursor:pointer;
 
-display:flex;
+display:inline-flex;
 align-items:center;
-gap:6px;
 
-font-size:14px;
-height:50px;
+gap:10px;
+
+font-size:16px;
+
 }
 
 button:hover{
@@ -44,27 +45,44 @@ background:#30363d;
 }
 
 .icon{
-height:28px;
-}
-
-.command{
-opacity:0.6;
-font-size:12px;
+height:48px;
 }
 
 .comboLine{
-font-size:22px;
-margin-top:10px;
+
+font-size:24px;
+
+margin-top:15px;
+
 }
 
 .comboMove{
+
 display:inline-flex;
 align-items:center;
+
 margin-right:10px;
-gap:4px;
+
+gap:6px;
+
+}
+
+.comboMove img{
+
+height:40px;
+
 }
 
 .arrow{
-margin:0 6px;
-opacity:0.5;
+
+margin:0 8px;
+
+opacity:0.6;
+
+}
+
+.category{
+
+margin-top:25px;
+
 }
