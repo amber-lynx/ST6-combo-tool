@@ -1,45 +1,31 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ja">
 <head>
-
 <meta charset="UTF-8">
-<title>Kimberly Combo Tool</title>
-
+<title>スト6 コンボメーカー</title>
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-<h1>Kimberly Combo Tool</h1>
+<h1>スト6 コンボメーカー</h1>
 
 <div class="panel">
-Damage : <span id="damage">0</span> |
-Frame : <span id="frame">0</span> |
-Spray : <span id="spray">2</span>
+ダメージ <span id="damage">0</span>　
+フレーム <span id="frame">0</span>
 </div>
-
-<div class="panel">
-
-<h2>Combo</h2>
 
 <div id="combo" class="comboLine"></div>
 
-<button onclick="clearCombo()">CLEAR</button>
-<button onclick="saveCombo()">SAVE</button>
+<button onclick="clearCombo()">クリア</button>
 
-</div>
+<h2>技選択</h2>
 
 <div id="moves"></div>
 
+<h2>派生</h2>
 <div id="followups"></div>
 
-<h2>Saved Combos</h2>
-
-<div id="saved"></div>
-
 <script src="app.js"></script>
-
 </body>
 </html>
