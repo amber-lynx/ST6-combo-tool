@@ -1,3 +1,10 @@
+let combo = [];
+
+const iconMap = {
+    "弱P": "icons/LP.png", "中P": "icons/MP.png", "強P": "icons/HP.png",
+    "弱K": "icons/LK.png", "中K": "icons/MK.png", "強K": "icons/HK.png"
+};
+
 const moves = {
     standing: [
         { name: "弱P", num: 7, cmd: "LP" }, { name: "中P", num: 8, cmd: "MP" }, { name: "強P", num: 9, cmd: "HP" },
@@ -7,7 +14,7 @@ const moves = {
         { name: "屈弱P", cmd: "2LP" }, { name: "屈中P", cmd: "2MP" }, { name: "屈強P", cmd: "2HP" },
         { name: "屈弱K", cmd: "2LK" }, { name: "屈中K", cmd: "2MK" }, { name: "屈強K", cmd: "2HK" },
     ],
-    // 【新設】ドライブゲージ消費技
+    // ドライブゲージ消費技
     drive: [
         { name: "ドライブインパクト（不動咎）", cmd: "HP+HK" },
         { name: "ドライブリバーサル（転）", cmd: "6+HP+HK" },
@@ -76,7 +83,7 @@ function drawMoves() {
     });
     html += `</div></div>`;
 
-    // 【ここを追加！】ドライブシステムを表示
+    // ドライブシステムを表示
     html += drawSection("Drive System (ゲージ消費)", moves.drive);
 
     // 必殺技・派生・特殊技・SA
