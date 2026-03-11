@@ -25,30 +25,22 @@
 </header>
 <main class="container">
     <section class="combo-section">
-        <!-- 【追加】ダメージとステータスを表示するバー -->
         <div class="status-bar">
             <div id="damageCount" class="damage-badge">Total Damage: 0</div>
         </div>
-
         <div id="combo" class="combo-display">
             <span class="placeholder">技を選択してコンボを作成...</span>
         </div>
-        
         <div class="main-controls">
-            <!-- OD切り替えスイッチ -->
             <button id="odSwitcher" class="btn-od-toggle" onclick="toggleOD()">ODモード: OFF</button>
-            <!-- Undo/Clearボタン -->
             <button class="btn-undo" onclick="undo()">1手戻る(Undo)</button>
             <button class="btn-clear" onclick="clearCombo()">全消去</button>
         </div>
-
         <div class="save-area">
-            <input type="text" id="comboName" placeholder="コンボ名（画面端など）">
-            <button class="btn-save" onclick="saveComboRoute()">保存</button>
+            <input type="text" id="comboName" placeholder="コンボ名">
+            <button class="btn-save" onclick="saveComboRoute()">保存する</button>
         </div>
     </section>
-
-    <!-- 技選択エリア（ここへapp.jsからボタンが流し込まれます） -->
     <section id="moves" class="moves-section"></section>
 </main>
 <script src="app.js"></script>
