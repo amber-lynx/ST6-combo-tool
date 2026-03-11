@@ -9,25 +9,19 @@ const iconMap = {
     "強K":"icons/HK.png"
 };
 
-function getIcon(name) {
+function getIcon(name){
     for(let key in iconMap){
         if(name.includes(key)) return iconMap[key];
     }
     return "";
 }
 
-// 全技データ
+// 技データ
 const moves = {
-
     standing:[
-        {name:"弱P"},
-        {name:"中P"},
-        {name:"強P"},
-        {name:"弱K"},
-        {name:"中K"},
-        {name:"強K"}
+        {name:"弱P"}, {name:"中P"}, {name:"強P"},
+        {name:"弱K"}, {name:"中K"}, {name:"強K"}
     ],
-
     special:[
         {name:"武神旋風脚【214K】"},
         {name:"武神旋風脚（OD）【214KK】"},
@@ -43,46 +37,38 @@ const moves = {
             {name:"急停止 P"},
             {name:"胴刎ね 弱K"},
             {name:"影すくい 中K"},
-            {name:"首狩り 強K"},
-            {name:"弧空"}
+            {name:"首狩り 強K"}
         ]},
         {name:"召雷細工", followups:[
             {name:"細工手裏剣 ↓↓P"},
             {name:"乱れ細工手裏剣 ↓↓PP"}
         ]}
     ],
-
     unique:[
         {name:"水切り蹴り【3中K】"},
         {name:"風車【4強K】"},
-        {name:"飛箭蹴【6強K】", followups:[
-            {name:"↖"}, {name:"↑"}, {name:"↗"}
-        ]},
+        {name:"飛箭蹴【6強K】", followups:[{name:"↖"},{name:"↑"},{name:"↗"}]},
         {name:"肘落とし（前J）【2中P】"},
         {name:"武神虎連牙 中P＞強P"},
         {name:"武神天架拳 弱P＞中P＞強P＞強K"},
         {name:"武神獄鎖拳 弱P＞中P＞2強P＞強K"},
         {name:"武神獄鎖投げ 弱P＞中P＞2強P＞2強K"}
     ],
-
     throw:[
         {name:"縄掛背負い【6弱P弱K】"},
         {name:"鍾打巴【4弱P弱K】"}
     ],
-
     system:[
         {name:"ドライブインパクト【強P強K】"},
         {name:"ドライブリバーサル【強P強K】"},
         {name:"パリィ【中P中K】"},
         {name:"ドライブラッシュ【66】"}
     ],
-
     sa:[
         {name:"武神乱拍手 SA1【236236K】"},
         {name:"武神天翔亢竜 SA2【214214P】"},
         {name:"武神顕現神楽 SA3【236236P】"}
     ]
-
 };
 
 // 描画
@@ -151,26 +137,34 @@ function update(){
     document.getElementById("combo").innerHTML=html;
 }
 
+// クリア
 function clearCombo(){
     combo=[];
     update();
     document.getElementById("followupsText").innerText="派生技なし";
 }
 
-drawMoves();
+// コンボ登録
+function saveComboRoute(){
+    const name = document.getElementById("comboName").value.trim();
+    if(!name || combo.length === 0){
+        alert("名前とコンボを入力してください");
+        return;
+    }
 
-// 別タブで編集ページを開く
-function openEditPage(){
-    window.open("edit.html", "_blank");
+    let saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
+    const editIndex = JSON.parse(localStorage.getItem("editIndex") || "null");
+
+    if(editIndex !== null){
+        saved[editIndex] = {name:name, route: combo.map(c=>c.name)};
+        localStorage.removeItem("editIndex");
+    } else {
+        saved.push({name:name, route: combo.map(c=>c.name)});
+    }
+
+    localStorage.setItem("comboRoutes", JSON.stringify(saved));
+    document.getElementById("comboName").value="";
+    alert("登録完了！");
 }
 
-// ページロード時に編集データがあれば読み込む
-window.addEventListener("load", function(){
-    const editData = JSON.parse(localStorage.getItem("editCombo") || "null");
-    if(editData){
-        combo = editData.route.route.map(name => ({name:name}));
-        update();
-        document.getElementById("followupsText").innerText = "派生技なし";
-        localStorage.removeItem("editCombo");
-    }
-});
+drawMoves();
