@@ -1,10 +1,3 @@
-let combo = [];
-
-const iconMap = {
-    "弱P": "icons/LP.png", "中P": "icons/MP.png", "強P": "icons/HP.png",
-    "弱K": "icons/LK.png", "中K": "icons/MK.png", "強K": "icons/HK.png"
-};
-
 const moves = {
     standing: [
         { name: "弱P", num: 7, cmd: "LP" }, { name: "中P", num: 8, cmd: "MP" }, { name: "強P", num: 9, cmd: "HP" },
@@ -14,10 +7,22 @@ const moves = {
         { name: "屈弱P", cmd: "2LP" }, { name: "屈中P", cmd: "2MP" }, { name: "屈強P", cmd: "2HP" },
         { name: "屈弱K", cmd: "2LK" }, { name: "屈中K", cmd: "2MK" }, { name: "屈強K", cmd: "2HK" },
     ],
+    // 【新設】ドライブゲージ消費技
+    drive: [
+        { name: "ドライブインパクト（不動咎）", cmd: "HP+HK" },
+        { name: "ドライブリバーサル（転）", cmd: "6+HP+HK" },
+        { name: "ドライブパリィ", cmd: "MP+MK" },
+        { name: "キャンセルラッシュ", cmd: "66" },
+        { name: "OD版 必殺技", cmd: "ボタン2つ押し" }
+    ],
+    // 通常必殺技（ゲージ消費なし）
     special: [
         { name: "武神旋風脚", cmd: "214K" },
+        { name: "空中武神旋風脚", cmd: "j214K" },
         { name: "流転一文字", cmd: "236P" },
         { name: "彩隠形", cmd: "214P" },
+        { name: "召雷細工", cmd: "22P" },
+        { name: "荒鵺捻り", cmd: "j236P" },
         { 
             name: "疾駆け", cmd: "214K", 
             followups: [
@@ -31,8 +36,7 @@ const moves = {
                     ]
                 }
             ]
-        },
-        { name: "細工手裏剣", cmd: "22P" }
+        }
     ],
     unique: [
         { name: "水切り蹴り", cmd: "3中K" }, { name: "風車", cmd: "4強K" },
@@ -59,7 +63,11 @@ function setTheme(theme) {
 function drawMoves() {
     const container = document.getElementById("moves");
     if (!container) return;
-    let html = `<div class="category"><h3>Normals</h3><div class="standingGrid">`;
+    
+    let html = "";
+    
+    // 通常技
+    html += `<div class="category"><h3>Normals</h3><div class="standingGrid">`;
     moves.standing.forEach(m => {
         html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'><img src="${getIcon(m.name)}" onerror="this.style.display='none'"><span>${m.name}</span></button>`;
     });
@@ -67,10 +75,16 @@ function drawMoves() {
         html += `<button class="standingBtn crouch" onclick='addMove(${JSON.stringify(m)})'><span>${m.name}</span></button>`;
     });
     html += `</div></div>`;
+
+    // 【ここを追加！】ドライブシステムを表示
+    html += drawSection("Drive System (ゲージ消費)", moves.drive);
+
+    // 必殺技・派生・特殊技・SA
     html += drawSection("Special Moves", moves.special);
     html += `<div class="category highlight"><h3>Followup</h3><div id="followupList" class="followup-grid">選択可能な派生なし</div></div>`;
     html += drawSection("Unique Attacks", moves.unique);
     html += drawSection("Super Arts", moves.sa);
+    
     container.innerHTML = html;
 }
 
