@@ -1,39 +1,63 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ja">
 <head>
-
 <meta charset="UTF-8">
-<title>Kimberly Combo Tool</title>
-
+<title>ST6 Combo Tool</title>
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-<h1>Kimberly Combo Tool</h1>
+<h1>ST6 コンボ作成</h1>
 
 <div class="panel">
 
-Damage : <span id="damage">0</span>
-Frame : <span id="frame">0</span>
-Spray : <span id="spray">2</span>
+<h2>技選択</h2>
+
+<div class="buttonGrid">
+
+<button onclick="addMove('立ち弱P','5LP','icons/LP.png')">
+<img src="icons/LP.png" class="icon">
+立ち弱P <span class="command">(5LP)</span>
+</button>
+
+<button onclick="addMove('立ち中P','5MP','icons/MP.png')">
+<img src="icons/MP.png" class="icon">
+立ち中P <span class="command">(5MP)</span>
+</button>
+
+<button onclick="addMove('立ち強P','5HP','icons/HP.png')">
+<img src="icons/HP.png" class="icon">
+立ち強P <span class="command">(5HP)</span>
+</button>
+
+<button onclick="addMove('↓弱P','2LP','icons/LP.png')">
+<img src="icons/LP.png" class="icon">
+↓弱P <span class="command">(2LP)</span>
+</button>
+
+<button onclick="addMove('↓中P','2MP','icons/MP.png')">
+<img src="icons/MP.png" class="icon">
+↓中P <span class="command">(2MP)</span>
+</button>
+
+<button onclick="addMove('↓強P','2HP','icons/HP.png')">
+<img src="icons/HP.png" class="icon">
+↓強P <span class="command">(2HP)</span>
+</button>
 
 </div>
 
-<div id="combo" class="comboLine"></div>
+</div>
 
-<button onclick="clearCombo()">CLEAR</button>
-<button onclick="saveCombo()">SAVE</button>
 
-<div id="moves"></div>
+<div class="panel">
 
-<div id="followups"></div>
+<h2>コンボ</h2>
 
-<h2>Saved Combos</h2>
+<div id="comboLine" class="comboLine"></div>
 
-<div id="saved"></div>
+</div>
 
 <script src="app.js"></script>
 
