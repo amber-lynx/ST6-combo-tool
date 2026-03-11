@@ -47,8 +47,8 @@ const moves = {
         { 
             name: "召雷細工", cmd: "22P", dmg: 0,
             followups: [
-                { name: "細工手裏剣", cmd: "22P", dmg: 200 },
-                { name: "乱れ細工手裏剣", cmd: "22PP", dmg: 400, gauge: 2 }
+                { name: "細工手裏剣", cmd: "↓↓P", dmg: 200 },
+                { name: "乱れ細工手裏剣", cmd: "↓↓PP", dmg: 400, gauge: 2 }
             ]
         },
         { name: "荒鵺捻り", cmd: "j236P", odCmd: "j236PP", hasOD: true, dmg: 1300, odDmg: 1500, gauge: 0, odGauge: 2 }
@@ -69,6 +69,7 @@ const moves = {
     system: [
         { name: "インパクト", cmd: "HP+HK", dmg: 800, gauge: 1 },
         { name: "リバーサル", cmd: "6+HP+HK", dmg: 500, gauge: 2 },
+        { name: "パリィ", cmd: "MP+MK", gauge: 0.5 },
         { name: "ラッシュ(生)", cmd: "66", gauge: 1 },
         { name: "ラッシュ(取消)", cmd: "66", gauge: 3 }
     ],
@@ -101,8 +102,10 @@ function toggleOD() {
 function toggleCorner() {
     isCorner = !isCorner;
     const btn = document.getElementById("cornerSwitcher");
-    btn.classList.toggle("active", isCorner);
-    btn.innerText = isCorner ? "場所: 画面端 🧱" : "場所: 中央";
+    if(btn) {
+        btn.classList.toggle("active", isCorner);
+        btn.innerText = isCorner ? "場所: 画面端 🧱" : "場所: 中央";
+    }
 }
 
 function drawMoves() {
@@ -110,8 +113,8 @@ function drawMoves() {
     if (!container) return;
     let html = "";
     
-    // 通常技（立ち・屈み）
-    html += `<div class="category"><h3>Normals (Stand/Crouch)</h3><div class="standingGrid">`;
+    // 1. 通常技 (立ち・屈み)
+    html += `<div class="category"><h3>Normals</h3><div class="standingGrid">`;
     [...moves.standing, ...moves.crouching].forEach(m => {
         html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
             <img src="${getIcon(m.name)}" onerror="this.style.display='none'">
@@ -120,7 +123,7 @@ function drawMoves() {
     });
     html += `</div></div>`;
 
-    // 必殺技
+    // 2. 必殺技
     html += `<div class="category"><h3>Special Moves</h3><div class="move-grid">`;
     moves.special.forEach(m => {
         let name = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
@@ -129,23 +132,31 @@ function drawMoves() {
     });
     html += `</div></div>`;
 
-    // 派生エリア
+    // 3. 派生専用エリア
     html += `<div class="category highlight"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
 
-    // 特殊技
-    html += drawSection("Unique Attacks", moves.unique);
+    // 4. 特殊技 & ターゲットコンボ
+    html += `<div class="category"><h3>Unique Attacks / TC</h3><div class="move-grid">`;
+    moves.unique.forEach(m => {
+        html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name} <br><small>${m.cmd}</small></button>`;
+    });
+    html += `</div></div>`;
 
-    // ドライブ・SA
-    html += drawSection("Drive System / Super Arts", [...moves.system, ...moves.sa]);
+    // 5. ドライブシステム
+    html += `<div class="category"><h3>Drive System</h3><div class="move-grid">`;
+    moves.system.forEach(m => {
+        html += `<button class="system-btn" onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`;
+    });
+    html += `</div></div>`;
+
+    // 6. スーパーアーツ
+    html += `<div class="category"><h3>Super Arts</h3><div class="move-grid">`;
+    moves.sa.forEach(m => {
+        html += `<button class="sa-btn" onclick='addMove(${JSON.stringify(m)})'>${m.name}</button>`;
+    });
+    html += `</div></div>`;
     
     container.innerHTML = html;
-}
-
-function drawSection(title, list) {
-    let html = `<div class="category"><h3>${title}</h3><div class="move-grid">`;
-    list.forEach(m => { html += `<button onclick='addMove(${JSON.stringify(m)})'>${m.name} <small>${m.cmd || ''}</small></button>`; });
-    html += `</div></div>`;
-    return html;
 }
 
 function getIcon(name) {
@@ -202,4 +213,5 @@ function saveComboRoute() {
     localStorage.setItem("comboRoutes", JSON.stringify(saved));
     alert("保存完了！");
     clearCombo();
+    document.getElementById("comboName").value = "";
 }
