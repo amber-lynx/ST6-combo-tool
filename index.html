@@ -5,7 +5,6 @@
 <title>Kimberly Combo Tool</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 <h1>Kimberly Combo Tool</h1>
 
@@ -23,9 +22,11 @@
     <input type="text" id="comboCategory" placeholder="カテゴリ（例：中央戦用）">
     <button onclick="saveComboRoute()">登録</button>
     <button onclick="clearCombo()">CLEAR</button>
+    <label><input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"> ダークモード</label>
 </div>
 
-<div id="combo" class="comboLine"></div>
+<div id="combo" class="comboLine" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+<div id="totalDamage">ダメージ合計: 0</div>
 <div id="moves"></div>
 
 <div class="category">
@@ -38,6 +39,9 @@
 function switchPage(){
     const sel = document.getElementById("pageSelector");
     window.location.href = sel.value;
+}
+function toggleDarkMode(){
+    document.body.classList.toggle("dark");
 }
 </script>
 </body>
