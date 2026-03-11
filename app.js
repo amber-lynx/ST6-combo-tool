@@ -43,8 +43,7 @@ const moves = {
             ]
         },
         { name: "荒鵺捻り", cmd: "j236P", odCmd: "j236PP", hasOD: true, dmg: 1300, odDmg: 1500 },
-        { name: "武神旋風脚", cmd: "214K", dmg: 1000 } // 重複分
-    ],
+       
     unique: [
         { name: "水切り蹴り", cmd: "3中K", dmg: 600 },
         { name: "風車", cmd: "4強K", dmg: 800 },
