@@ -20,26 +20,27 @@ button{
 background:#21262d;
 border:none;
 color:white;
-
-width:260px;      /* 横長にする */
-height:70px;      /* 高さ */
-
-padding:10px 16px;
-margin:6px;
-
+padding:10px;
 border-radius:8px;
 cursor:pointer;
 
-display:flex;     /* 横並び */
+display:flex;
 align-items:center;
-justify-content:flex-start;
+gap:6px;
 
-gap:12px;
-font-size:18px;
+font-size:14px;
+height:50px;
 }
 
 button:hover{
 background:#30363d;
+}
+
+.buttonGrid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+max-width:500px;
 }
 
 .icon{
