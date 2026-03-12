@@ -1,112 +1,70 @@
 body{
 
+margin:0;
 font-family:sans-serif;
-background:#f4f4f4;
-color:#111;
-padding:20px;
 
 }
 
-body.dark{
+header{
 
-background:#111;
-color:white;
-
-}
-
-h1{
-
-margin-bottom:10px;
+text-align:center;
+border-bottom:2px solid black;
+padding:10px;
 
 }
 
-.panel{
+.topMenu{
 
-margin-bottom:20px;
-
-}
-
-.panel input{
-
-padding:6px;
-margin-right:5px;
+margin-top:5px;
 
 }
 
-button{
+.comboArea{
 
-padding:6px 10px;
-margin:3px;
-cursor:pointer;
-
-}
-
-.category{
-
-margin-top:25px;
+border-bottom:2px solid black;
+padding:10px;
+background:#ddd;
 
 }
 
-.grid{
-
-display:grid;
-grid-template-columns:repeat(3,auto);
-gap:8px;
-
-}
-
-.grid2{
-
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:8px;
-
-}
-
-.standingBtn{
-
-display:flex;
-flex-direction:column;
-align-items:center;
-
-}
-
-.standingBtn img{
-
-width:60px;
-height:60px;
-
-}
-
-/* ↑ アイコンサイズ変更ここ */
-
-#comboArea{
+#combo{
 
 min-height:40px;
-border:2px dashed #888;
+
+}
+
+.jumpMenu{
+
 padding:10px;
-margin-bottom:10px;
+border-bottom:2px solid black;
+
+}
+
+.jumpMenu button{
+
+margin:3px;
+
+}
+
+.commandList{
+
+height:400px;
+overflow-y:scroll;
+padding:10px;
+
+}
+
+.commandList button{
+
+margin:4px;
 
 }
 
 .comboMove{
 
+background:#ccc;
+padding:5px 10px;
+margin:3px;
 display:inline-block;
-padding:6px 10px;
-background:#ddd;
-margin-right:5px;
-cursor:grab;
-
-}
-
-body.dark .comboMove{
-
-background:#333;
-
-}
-
-.arrow{
-
-margin-right:5px;
 
 }
