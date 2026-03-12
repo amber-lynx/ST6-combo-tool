@@ -1,65 +1,257 @@
 {
-"character":"Kimberly",
+  "categories": {
 
-"categories":{
+    "normal": {
+      "title": "通常技",
+      "moves": [
+        {"name":"弱P","damage":300},
+        {"name":"中P","damage":600},
+        {"name":"強P","damage":900},
 
-"normal":{
-"title":"通常技",
-"moves":[
-{"id":"5LP","name":"弱P"},
-{"id":"5MP","name":"中P"},
-{"id":"5HP","name":"強P"},
-{"id":"5LK","name":"弱K"},
-{"id":"5MK","name":"中K"},
-{"id":"5HK","name":"強K"}
-]
-},
+        {"name":"弱K","damage":300},
+        {"name":"中K","damage":700},
+        {"name":"強K","damage":900}
+      ]
+    },
 
-"crouch":{
-"title":"しゃがみ技",
-"moves":[
-{"id":"2LP","name":"しゃがみ弱P"},
-{"id":"2MP","name":"しゃがみ中P"},
-{"id":"2HP","name":"しゃがみ強P"},
-{"id":"2LK","name":"しゃがみ弱K"},
-{"id":"2MK","name":"しゃがみ中K"},
-{"id":"2HK","name":"しゃがみ強K"}
-]
-},
+    "special": {
+      "title": "必殺技",
+      "moves": [
 
-"unique":{
-"title":"特殊技",
-"moves":[
-{"id":"6MP","name":"肘"},
-{"id":"TC","name":"ターゲットコンボ"}
-]
-},
+        {
+          "name":"流転一文字",
+          "cmd":"↓↘→ + P",
+          "damage":900
+        },
 
-"special":{
-"title":"必殺技",
-"moves":[
-{"id":"214K","name":"武神旋風脚"},
-{"id":"236P","name":"流転"},
-{"id":"236PP","name":"OD荒鵺捻り"}
-]
-},
+        {
+          "name":"彩隠形",
+          "cmd":"↓↙← + P",
+          "damage":800
+        },
 
-"sa":{
-"title":"SA",
-"moves":[
-{"id":"SA1","name":"SA1"},
-{"id":"SA2","name":"SA2"},
-{"id":"SA3","name":"SA3"}
-]
-},
+        {
+          "name":"召雷細工",
+          "cmd":"↓↓ + P",
+          "damage":0,
+          "followups":[
 
-"system":{
-"title":"システム",
-"moves":[
-{"id":"DR","name":"Drive Rush"},
-{"id":"DASH","name":"前ステ"}
-]
-}
+            {
+              "name":"細工手裏剣",
+              "cmd":"↓↓ + P",
+              "damage":500
+            },
 
-}
+            {
+              "name":"乱れ細工手裏剣",
+              "cmd":"↓↓ + PP",
+              "damage":800
+            }
+
+          ]
+        },
+
+        {
+          "name":"荒鵺捻り",
+          "cmd":"↓↘→ + P (空中)",
+          "damage":1100
+        },
+
+        {
+          "name":"武神旋風脚",
+          "cmd":"↓↙← + K",
+          "damage":1000
+        },
+
+        {
+          "name":"空中武神旋風脚",
+          "cmd":"↓↙← + K (空中)",
+          "damage":1000
+        },
+
+        {
+          "name":"疾駆け",
+          "cmd":"↓↘→ + K",
+          "damage":0,
+          "followups":[
+
+            {"name":"急停止","cmd":"P","damage":0},
+
+            {"name":"胴刎ね","cmd":"弱K","damage":900},
+
+            {"name":"影すくい","cmd":"中K","damage":1000},
+
+            {"name":"首狩り","cmd":"強K","damage":1100},
+
+            {
+              "name":"弧空",
+              "cmd":"自動派生",
+              "damage":0,
+              "followups":[
+
+                {
+                  "name":"武神イズナ落とし",
+                  "cmd":"P",
+                  "damage":1600
+                },
+
+                {
+                  "name":"武神鉾刃脚",
+                  "cmd":"K",
+                  "damage":1400
+                }
+
+              ]
+            }
+
+          ]
+        }
+
+      ]
+    },
+
+    "unique": {
+      "title":"特殊技",
+      "moves":[
+
+        {
+          "name":"水切り蹴り",
+          "cmd":"↘ + 中K",
+          "damage":500
+        },
+
+        {
+          "name":"風車",
+          "cmd":"← + 強K",
+          "damage":700
+        },
+
+        {
+          "name":"飛箭蹴",
+          "cmd":"→ + 強K",
+          "damage":600,
+          "followups":[
+
+            {"name":"矢越え ↖"},
+            {"name":"矢越え ↑"},
+            {"name":"矢越え ↗"}
+
+          ]
+        },
+
+        {
+          "name":"肘落とし",
+          "cmd":"↓ + 中P (前ジャンプ)",
+          "damage":500
+        },
+
+        {
+          "name":"武神虎連牙",
+          "cmd":"中P → 強P",
+          "damage":700
+        },
+
+        {
+          "name":"武神天架拳",
+          "cmd":"弱P → 中P → 強P → 強K",
+          "damage":1200
+        },
+
+        {
+          "name":"武神獄鎖拳",
+          "cmd":"弱P → 中P → ↓強P → 強K",
+          "damage":1200
+        },
+
+        {
+          "name":"武神獄鎖投げ",
+          "cmd":"弱P → 中P → ↓強P → ↓強K",
+          "damage":1300
+        }
+
+      ]
+    },
+
+    "system": {
+      "title":"システム",
+      "moves":[
+
+        {
+          "name":"ドライブインパクト",
+          "cmd":"強P + 強K",
+          "damage":800
+        },
+
+        {
+          "name":"ドライブリバーサル",
+          "cmd":"→ + 強P + 強K",
+          "damage":600
+        },
+
+        {
+          "name":"ドライブパリィ",
+          "cmd":"中P + 中K",
+          "damage":0
+        },
+
+        {
+          "name":"ドライブラッシュ",
+          "cmd":"→→",
+          "damage":0
+        }
+
+      ]
+    },
+
+    "throw": {
+      "title":"投げ",
+      "moves":[
+
+        {
+          "name":"縄掛背負い",
+          "cmd":"→ + 弱P + 弱K",
+          "damage":1200
+        },
+
+        {
+          "name":"鐘打巴",
+          "cmd":"← + 弱P + 弱K",
+          "damage":1200
+        }
+
+      ]
+    },
+
+    "sa": {
+      "title":"SA",
+      "moves":[
+
+        {
+          "name":"SA1 武神乱拍手",
+          "cmd":"↓↘→ ↓↘→ + K",
+          "damage":2000
+        },
+
+        {
+          "name":"SA2 武神天翔亢竜",
+          "cmd":"↓↙← ↓↙← + P",
+          "damage":2500
+        },
+
+        {
+          "name":"SA2 空中武神天翔亢竜",
+          "cmd":"↓↙← ↓↙← + P (空中)",
+          "damage":2500
+        },
+
+        {
+          "name":"SA3 武神顕現神楽",
+          "cmd":"↓↘→ ↓↘→ + P",
+          "damage":4000
+        }
+
+      ]
+    }
+
+  }
 }
