@@ -5,23 +5,22 @@ let isODMode = false;
 let isCorner = false;
 let movesData = null;
 
-// アプリ起動
 async function init() {
     try {
         const response = await fetch('./assets/data/move_list.json');
         if (!response.ok) throw new Error("JSONが見つかりません");
         movesData = await response.json();
         
-        applyTheme();
-        drawMoves(); // ここでボタンを安全に生成
-        updateStats();
+        window.applyTheme();
+        window.drawMoves();
+        window.updateStats();
         console.log("App Initialized successfully");
     } catch (e) {
         console.error("初期化エラー:", e);
     }
 }
 
-// 技の追加 (オブジェクトを直接受け取る)
+// 技の追加
 window.addMove = (m) => {
     if (!m) return;
     let finalMove = { ...m };
@@ -33,14 +32,14 @@ window.addMove = (m) => {
         finalMove.drive = m.gauge || 0;
     }
     combo.push(finalMove);
-    updateStats();
-    updateComboDisplay();
-    updateFollowups(m);
-    scrollToEnd();
+    window.updateStats();
+    window.updateComboDisplay();
+    window.updateFollowups(m);
+    window.scrollToEnd();
 };
 
-// 描画ロジック (onclick属性を使わないプロの書き方)
-function drawMoves() {
+// 描画
+window.drawMoves = () => {
     const container = document.getElementById("moveList");
     if (!container || !movesData) return;
     container.innerHTML = ""; 
@@ -67,10 +66,7 @@ function drawMoves() {
             const name = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
             if (isODMode && m.hasOD) btn.className = "od-active";
             btn.innerHTML = `<span>${name}</span>${m.start ? `<small>発${m.start}</small>` : ''}`;
-            
-            // 重要：HTMLに文字として書き込まず、メモリ上でクリックイベントを登録
             btn.addEventListener("click", () => window.addMove(m));
-            
             grid.appendChild(btn);
         });
         catDiv.appendChild(grid);
@@ -84,9 +80,9 @@ function drawMoves() {
             container.appendChild(fDiv);
         }
     });
-}
+};
 
-function updateFollowups(move) {
+window.updateFollowups = (move) => {
     const fList = document.getElementById("followupList");
     if (!fList) return;
     if (move.followups && move.followups.length > 0) {
@@ -101,24 +97,38 @@ function updateFollowups(move) {
     } else {
         fList.innerHTML = "派生なし";
     }
-}
+};
 
-// 共通機能
-window.setTheme = (t) => { localStorage.setItem("theme", t); applyTheme(); };
-function applyTheme() { document.body.className = 'theme-' + (localStorage.getItem("theme") || "dark"); }
-window.toggleOD = () => { isODMode = !isODMode; const b = document.getElementById("odSwitcher"); if(b) b.innerText = isODMode ? "OD: ON 🔥" : "OD: OFF"; drawMoves(); };
-window.undo = () => { combo.pop(); updateStats(); updateComboDisplay(); };
-window.clearCombo = () => { combo = []; updateStats(); updateComboDisplay(); };
-function updateStats() {
+// --- 共通ボタン機能 ---
+window.setTheme = (t) => { localStorage.setItem("theme", t); window.applyTheme(); };
+window.applyTheme = () => { document.body.className = 'theme-' + (localStorage.getItem("theme") || "dark"); };
+window.toggleOD = () => { 
+    isODMode = !isODMode; 
+    const b = document.getElementById("odSwitcher"); 
+    if(b) b.innerText = isODMode ? "OD: ON 🔥" : "OD: OFF"; 
+    if(b) b.classList.toggle("active", isODMode);
+    window.drawMoves(); 
+};
+window.toggleCorner = () => {
+    isCorner = !isCorner;
+    const b = document.getElementById("cornerSwitcher");
+    if(b) b.innerText = isCorner ? "場所: 画面端 🧱" : "場所: 中央";
+    if(b) b.classList.toggle("active", isCorner);
+};
+window.undo = () => { combo.pop(); window.updateStats(); window.updateComboDisplay(); };
+window.clearCombo = () => { combo = []; window.updateStats(); window.updateComboDisplay(); };
+window.updateStats = () => {
     const d = combo.reduce((s, m) => s + (m.dmg || 0), 0);
-    if(document.getElementById("damageCount")) document.getElementById("damageCount").innerText = `Damage: ${d}`;
-}
-function updateComboDisplay() {
+    const dmgEl = document.getElementById("damageCount");
+    if(dmgEl) dmgEl.innerText = `Damage: ${d}`;
+};
+window.updateComboDisplay = () => {
     const d = document.getElementById("comboDisplay");
     if(d) d.innerHTML = renderComboIcons(combo);
-}
-function scrollToEnd() {
+};
+window.scrollToEnd = () => {
     const d = document.getElementById("comboDisplay");
     if(d) setTimeout(() => d.scrollTo({ left: d.scrollWidth, behavior: 'smooth' }), 50);
-}
+};
+
 init();
