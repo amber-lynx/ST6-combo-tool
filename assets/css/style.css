@@ -1,74 +1,76 @@
-/* --- 変数と基本設定 --- */
-:root {
-    --accent-glow: rgba(255, 255, 255, 0.2);
-}
-
+/* --- 1. 変数とテーマ（維持） --- */
+:root { --accent-glow: rgba(255, 255, 255, 0.2); }
 .theme-dark   { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; --border: #30363d; }
 .theme-blue   { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; --border: #233554; }
+.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; --border: #4a2d39; }
 .theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; --text: #ffffff; --border: #44337a; }
 .theme-green  { --bg: #0b1a0e; --card: #1b2e1f; --accent: #93f9bd; --text: #ffffff; --border: #2d4a39; }
-.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; --border: #4a2d39; }
 .theme-orange { --bg: #1a100b; --card: #2e1f1b; --accent: #f9bd93; --text: #ffffff; --border: #4a392d; }
 .theme-cyan   { --bg: #0b1a1a; --card: #1b2e2e; --accent: #93f9f9; --text: #ffffff; --border: #2d4a4a; }
-
-/* --- レイアウト構造 --- */
+/* --- 2. レイアウト基盤（ここが重要） --- */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-}
-
-body {
+    overflow: hidden; /* 全体のスクロールを禁止 */
     background: var(--bg);
     color: var(--text);
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    display: flex;
-    flex-direction: column;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-header { 
-    flex-shrink: 0;
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+/* 画面全体を縦に割る */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* --- 3. 固定エリア（クリックを邪魔しない設定） --- */
+header, .sticky-top-section, .category-nav {
+    flex-shrink: 0; /* 縮まない */
+    position: relative;
+    z-index: 10; /* 技リストより上に配置 */
+    background: var(--bg);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px 20px;
     border-bottom: 2px solid var(--border);
 }
 
-.app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
 .sticky-top-section {
-    flex-shrink: 0;
     padding: 15px;
-    background: var(--bg);
     border-bottom: 1px solid var(--border);
-    z-index: 100;
 }
 
-/* --- コンボ表示（横スクロール） --- */
+/* --- 4. コンボ表示とボタン（クリック可能にする） --- */
 .combo-display {
     background: rgba(0,0,0,0.4);
     border: 2px solid var(--accent);
     border-radius: 8px;
-    padding: 15px;
-    min-height: 80px;
-    max-height: 120px;
+    padding: 10px;
+    min-height: 60px;
     display: flex;
     overflow-x: auto;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 15px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    gap: 8px;
+    margin-bottom: 10px;
 }
 
-/* --- 技リスト（横スクロール） --- */
+.main-controls, .save-area, .header-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 20; /* ボタンを最前面へ */
+}
+
+/* --- 5. 技リスト（横スクロールエリア） --- */
 .moves-section-horizontal {
-    flex-grow: 1;
+    flex-grow: 1; /* 残りのスペースをすべて使う */
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
@@ -76,111 +78,42 @@ header {
     gap: 15px;
     background: rgba(0,0,0,0.1);
     -webkit-overflow-scrolling: touch;
+    z-index: 1; /* 固定エリアより下に配置 */
 }
 
 .category {
     flex: 0 0 auto;
-    min-width: 300px;
+    min-width: 280px;
     background: var(--card);
-    padding: 15px;
+    padding: 12px;
     border-radius: 10px;
     border: 1px solid var(--border);
     height: fit-content;
 }
 
-.category h3 {
-    border-left: 4px solid var(--accent);
-    padding-left: 10px;
-    margin: 0 0 15px 0;
-    font-size: 0.9rem;
-    text-transform: uppercase;
+/* --- 6. パーツ装飾（テキスト版） --- */
+.move-text-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent);
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
-/* ボタンとグリッド */
-.standingGrid, .move-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 10px; 
-}
+.move-name-txt { font-weight: bold; font-size: 14px; }
+.combo-arrow { font-size: 18px; color: var(--accent); margin: 0 5px; }
 
-button { 
-    border: none; 
-    border-radius: 4px; 
-    padding: 10px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    transition: 0.2s;
+/* ボタン基本設定 */
+button {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-weight: bold;
+    cursor: pointer;
     background: var(--border);
     color: white;
 }
 
-.standingBtn, .move-grid button {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    min-height: 60px;
-}
-
-button:active { transform: scale(0.95); }
-
-/* --- ステータスバー等 --- */
-.status-bar { display: flex; gap: 8px; margin-bottom: 10px; justify-content: flex-end; }
-.gauge-badge { background: var(--card); border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 12px; }
-.damage-badge { background: #f85149; padding: 4px 10px; border-radius: 4px; font-size: 12px; }
-.main-controls { display: flex; gap: 8px; margin-bottom: 10px; }
-.save-area { display: flex; gap: 5px; }
-.save-area input { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--card); color: white; }
-
-/* スクロールバー装飾 */
-::-webkit-scrollbar { height: 5px; }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-/* --- 最後に追記：コンボ欄の技名パーツをカード風にする --- */
-.move-text-wrapper {
-    background: rgba(255, 255, 255, 0.1); /* ほんのり白く透かす */
-    border: 1px solid var(--accent);      /* テーマごとの色で枠線を付ける */
-    padding: 6px 12px;
-    border-radius: 6px;
-    display: inline-block;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-}
-
-.move-name-txt {
-    font-weight: bold;
-    font-size: 14px;
-    color: var(--text);
-}
-
-.combo-arrow {
-    font-size: 18px;
-    color: var(--accent);
-    font-weight: bold;
-    margin: 0 5px;
-}
-/* --- 修正：重なり順とスクロール範囲の調整 --- */
-
-/* 1. 固定エリアを最前面に（z-indexを追加） */
-.sticky-top-section {
-    position: relative;
-    z-index: 100; 
-    background: var(--bg);
-}
-
-/* 2. ヘッダーもクリックできるように前面へ */
-header {
-    position: relative;
-    z-index: 101;
-    background: var(--bg);
-}
-
-/* 3. 技リストが上に重ならないように設定 */
-.moves-section-horizontal {
-    z-index: 1;
-    overflow-x: auto;
-    overflow-y: hidden;
-    /* 念のため固定エリアと被らないよう明示 */
-}
-
-/* 4. カテゴリージャンプ（タブ）もクリック可能に */
-.category-nav {
-    position: relative;
-    z-index: 102;
-}
+.move-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.status-bar { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 5px; }
+.gauge-badge, .damage-badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; }
