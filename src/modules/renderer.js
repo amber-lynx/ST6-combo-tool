@@ -79,3 +79,49 @@ export function renderComboIcons(comboSteps) {
         return `<div class="combo-step">${contentHtml}${arrowHtml}</div>`;
     }).join("");
 }
+/* --- コンボ表示用スタイル（renderer.jsと連動） --- */
+.combo-display {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    border: 2px solid var(--accent);
+}
+
+.combo-step {
+    display: flex;
+    align-items: center;
+}
+
+.icon-group {
+    display: flex;
+    gap: 2px; /* 2 と 中P の間の隙間 */
+}
+
+.cmd-icon {
+    width: 32px; /* アイコンの大きさ */
+    height: 32px;
+    object-fit: contain;
+}
+
+.move-icon-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.move-name-sub {
+    font-size: 10px;
+    color: #8b949e;
+    margin-top: 2px;
+}
+
+.combo-arrow {
+    margin: 0 10px;
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 20px;
+}
