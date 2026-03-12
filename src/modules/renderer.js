@@ -1,26 +1,50 @@
-// src/modules/renderer.js
+/**
+ * src/modules/renderer.js
+ * コンボデータを解析してHTML（アイコン表示）を生成するモジュール
+ */
 
-// コマンド文字列をアイコンファイル名に変換する辞書
+// コマンドテキストをアイコン画像の名前に変換する辞書
+// assets/icons/ 内のファイル名と一致させてください
 const ICON_MAP = {
-    "LP": "LP.png", "MP": "MP.png", "HP": "HP.png",
-    "LK": "LK.png", "MK": "MK.png", "HK": "HK.png",
-    "2": "2.png", "236": "236.png", "214": "214.png"
-    // ...必要に応じて追加
+    "弱P": "LP.png", "中P": "MP.png", "強P": "HP.png",
+    "弱K": "LK.png", "中K": "MK.png", "強K": "HK.png",
+    "2": "2.png", "4": "4.png", "6": "6.png", "8": "8.png",
+    "236": "236.png", "214": "214.png", "22": "22.png",
+    "j": "jump.png" // ジャンプ攻撃用
 };
 
+/**
+ * コンボ配列を受け取り、アイコンと矢印を含んだHTML文字列を返す
+ * @param {Array} comboSteps 
+ * @returns {string} HTML String
+ */
 export function renderComboIcons(comboSteps) {
-    return comboSteps.map((m, i) => {
-        // cmdが "214K" なら、最初の "214" 部分をアイコンにしたい等の処理
-        const iconFile = ICON_MAP[m.cmd] || null;
-        
-        const content = iconFile 
-            ? `<img src="assets/icons/${iconFile}" class="cmd-icon" title="${m.name}">`
-            : `<span class="txt-move">${m.name}</span>`;
+    if (!comboSteps || comboSteps.length === 0) return "";
+
+    return comboSteps.map((move, index) => {
+        // コマンドからアイコンを特定（例: "2中P" なら "2" を探す）
+        // 現状は単純に cmd プロパティをそのまま参照
+        const iconFile = ICON_MAP[move.cmd] || null;
+
+        // アイコンがある場合は img タグ、ない場合はテキストを表示
+        const contentHtml = iconFile 
+            ? `<div class="move-icon-wrapper">
+                <img src="assets/icons/${iconFile}" class="cmd-icon" alt="${move.cmd}">
+                <span class="move-name-sub">${move.name}</span>
+               </div>`
+            : `<div class="move-text-wrapper">
+                <span class="move-name-txt">${move.name}</span>
+               </div>`;
+
+        // 最後の技以外には「→」矢印を付ける
+        const arrowHtml = index < comboSteps.length - 1 
+            ? `<span class="combo-arrow">→</span>` 
+            : "";
 
         return `
-            <div class="combo-unit">
-                ${content}
-                ${i < comboSteps.length - 1 ? '<span class="arrow">→</span>' : ''}
+            <div class="combo-step">
+                ${contentHtml}
+                ${arrowHtml}
             </div>
         `;
     }).join("");
