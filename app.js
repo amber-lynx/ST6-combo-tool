@@ -27,17 +27,7 @@ title.innerText=category.title
 section.appendChild(title)
 
 category.moves.forEach(move=>{
-
-const btn=document.createElement("button")
-
-btn.innerText=move.name
-
-btn.onclick=()=>{
-addCombo(move)
-}
-
-section.appendChild(btn)
-
+section.appendChild(createMove(move))
 })
 
 container.appendChild(section)
@@ -46,6 +36,36 @@ container.appendChild(section)
 
 }
 
+
+function createMove(move){
+
+const box=document.createElement("div")
+
+const btn=document.createElement("button")
+btn.innerText=move.name
+
+btn.onclick=()=>addCombo(move)
+
+box.appendChild(btn)
+
+if(move.followups){
+
+const follow=document.createElement("div")
+follow.className="followup"
+
+move.followups.forEach(f=>{
+follow.appendChild(createMove(f))
+})
+
+box.appendChild(follow)
+
+}
+
+return box
+
+}
+
+
 function addCombo(move){
 
 combo.push(move)
@@ -53,23 +73,33 @@ renderCombo()
 
 }
 
+
 function renderCombo(){
 
-const box=document.getElementById("combo")
+const comboBox=document.getElementById("combo")
+const damageBox=document.getElementById("damage")
 
-box.innerHTML=""
+comboBox.innerHTML=""
+
+let total=0
 
 combo.forEach(move=>{
 
 const span=document.createElement("span")
+span.innerText=move.name+" ＞ "
 
-span.innerText=move.name+" → "
+comboBox.appendChild(span)
 
-box.appendChild(span)
+if(move.damage){
+total+=move.damage
+}
 
 })
 
+damageBox.innerText="合計ダメージ: "+total
+
 }
+
 
 function removeLast(){
 
@@ -78,12 +108,29 @@ renderCombo()
 
 }
 
+
 function removeAll(){
 
 combo=[]
 renderCombo()
 
 }
+
+
+function copyCombo(){
+
+let text=""
+
+combo.forEach(move=>{
+text+=move.name+" ＞ "
+})
+
+navigator.clipboard.writeText(text)
+
+alert("コンボコピーしました")
+
+}
+
 
 function changeBg(num){
 
