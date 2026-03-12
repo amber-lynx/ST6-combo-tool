@@ -2,41 +2,76 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>ST6 Combo Tool</title>
+<title>Kimberly Combo Tool</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>ST6 Combo Tool</h1>
+<header>
 
-<div class="panel">
+<h2>Kimberly Combo Tool</h2>
 
-<input id="comboName" placeholder="ルート名">
-<input id="comboCategory" placeholder="カテゴリ">
+<div class="topMenu">
 
-<button onclick="saveCombo()">保存</button>
-<button onclick="clearCombo()">CLEAR</button>
+<select onchange="changeBackground(this.value)">
+<option value="bg1">背景1</option>
+<option value="bg2">背景2</option>
+<option value="bg3">背景3</option>
+<option value="bg4">背景4</option>
+<option value="bg5">背景5</option>
+</select>
 
-<label class="darkToggle">
-<input type="checkbox" onchange="toggleDark()">
-ダークモード
-</label>
+<button onclick="location.href='edit.html'">
+編集・削除
+</button>
 
 </div>
 
-<div id="comboArea"></div>
+</header>
 
-<div id="damage">
-合計ダメージ : <span id="damageValue">0</span>
+
+<section class="comboArea">
+
+<h3>コンボルート表示</h3>
+
+<div id="combo"></div>
+
+<div class="comboButtons">
+
+<button onclick="deleteLast()">1つ削除</button>
+
+<button onclick="clearCombo()">全削除</button>
+
 </div>
 
-<div id="moves"></div>
+</section>
 
-<div class="category">
-<h3>派生</h3>
-<div id="followups">派生技なし</div>
-</div>
+
+<section class="jumpMenu">
+
+<button onclick="jump('standing')">Standing</button>
+<button onclick="jump('special')">Special</button>
+<button onclick="jump('follow')">派生</button>
+<button onclick="jump('unique')">特殊技</button>
+<button onclick="jump('system')">システム</button>
+<button onclick="jump('throw')">投げ</button>
+<button onclick="jump('sa')">SA</button>
+
+</section>
+
+
+<section class="commandList">
+
+<div id="standing"></div>
+<div id="special"></div>
+<div id="follow"></div>
+<div id="unique"></div>
+<div id="system"></div>
+<div id="throw"></div>
+<div id="sa"></div>
+
+</section>
 
 <script src="app.js"></script>
 
