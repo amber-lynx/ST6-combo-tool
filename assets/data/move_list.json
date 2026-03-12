@@ -1,1 +1,12 @@
-
+{
+    "standing": [
+        { "name": "弱P", "cmd": "弱P", "dmg": 300, "start": 4, "guard": -2 },
+        { "name": "中P", "cmd": "中P", "dmg": 600, "start": 6, "guard": 2 }
+    ],
+    "crouching": [],
+    "special": [],
+    "unique": [],
+    "throws": [],
+    "sa": [],
+    "system": []
+}
