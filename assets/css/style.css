@@ -133,3 +133,25 @@ button:active { transform: scale(0.95); }
 /* スクロールバー装飾 */
 ::-webkit-scrollbar { height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+/* --- 最後に追記：コンボ欄の技名パーツをカード風にする --- */
+.move-text-wrapper {
+    background: rgba(255, 255, 255, 0.1); /* ほんのり白く透かす */
+    border: 1px solid var(--accent);      /* テーマごとの色で枠線を付ける */
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.move-name-txt {
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.combo-arrow {
+    font-size: 18px;
+    color: var(--accent);
+    font-weight: bold;
+    margin: 0 5px;
+}
