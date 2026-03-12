@@ -18,13 +18,12 @@ async function init() {
         drawMoves();
         updateStats();
         
-        // URLからのコンボ読み込み機能（共有リンク対応）
         loadFromUrl();
         console.log("App Initialized successfully");
     } catch (e) {
         console.error("初期化エラー:", e);
         const listEl = document.getElementById("moveList");
-        if(listEl) listEl.innerHTML = "<p>データの読み込みに失敗しました。パスを確認してください。</p>";
+        if(listEl) listEl.innerHTML = "<p>データの読み込みに失敗しました。</p>";
     }
 }
 
@@ -60,26 +59,28 @@ window.toggleCorner = () => {
     }
 };
 
-// 技の追加
-window.addMove = (moveStr) => {
+/**
+ * 3. 技の追加ロジック (文字列パースを廃止)
+ */
+window.addMove = (m) => {
+    if (!m) return;
     try {
-        const m = typeof moveStr === 'string' ? JSON.parse(moveStr) : moveStr;
-        let finalMove = { ...m };
+        // 直接オブジェクトとして扱う（文字列ならパースする互換性も維持）
+        const rawMove = (typeof m === 'string') ? JSON.parse(m) : m;
+        let finalMove = { ...rawMove };
         
-        if (isODMode && m.hasOD) {
-            finalMove.name = "OD" + m.name;
-            finalMove.dmg = m.odDmg || m.dmg;
-            finalMove.drive = m.odGauge || 0;
+        if (isODMode && rawMove.hasOD) {
+            finalMove.name = "OD" + rawMove.name;
+            finalMove.dmg = rawMove.odDmg || rawMove.dmg;
+            finalMove.drive = rawMove.odGauge || 0;
         } else {
-            finalMove.drive = m.gauge || 0;
+            finalMove.drive = rawMove.gauge || 0;
         }
 
         combo.push(finalMove);
         updateStats();
         updateComboDisplay();
-        updateFollowups(m);
-        
-        // プロSE仕様：追加時に自動スクロール
+        updateFollowups(rawMove);
         scrollToEnd();
     } catch(e) {
         console.error("addMove Error:", e);
@@ -104,14 +105,14 @@ window.clearCombo = () => {
 };
 
 /**
- * 3. 描画ロジック（横スクロール・カテゴリー対応版）
+ * 4. 描画ロジック (HTMLインジェクションではなくDOM操作で作成)
  */
 function drawMoves() {
     const container = document.getElementById("moveList");
     if (!container || !movesData) return;
     
-    let html = "";
-    // カテゴリーIDをHTML側のジャンプ用ボタン(scrollToCategory)と一致させる
+    container.innerHTML = ""; // 初期化
+
     const cats = [
         { id: "normal", label: "Normals (通常技)", data: [...(movesData.standing || []), ...(movesData.crouching || [])], grid: "standingGrid" },
         { id: "unique", label: "Unique Attacks (特殊技)", data: movesData.unique || [], grid: "move-grid" },
@@ -121,25 +122,38 @@ function drawMoves() {
     ];
 
     cats.forEach(cat => {
-        // プロSE仕様：data-category属性を付与してジャンプ可能に
-        html += `<div class="category" data-category="${cat.id}"><h3>${cat.label}</h3><div class="${cat.grid || 'move-grid'}">`;
+        const catDiv = document.createElement("div");
+        catDiv.className = "category";
+        catDiv.setAttribute("data-category", cat.id);
+        catDiv.innerHTML = `<h3>${cat.label}</h3>`;
+        
+        const gridDiv = document.createElement("div");
+        gridDiv.className = cat.grid || "move-grid";
+        
         cat.data.forEach(m => {
+            const btn = document.createElement("button");
             const displayName = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
-            const odCls = (isODMode && m.hasOD) ? "od-active" : "";
-            const moveJson = JSON.stringify(m).replace(/'/g, "\\'");
+            if (isODMode && m.hasOD) btn.classList.add("od-active");
             
-            html += `<button class="${odCls}" onclick="addMove('${moveJson}')">
-                        <span>${displayName}</span>
-                        ${m.start ? `<small>発${m.start}</small>` : ''}
-                    </button>`;
+            btn.innerHTML = `<span>${displayName}</span>${m.start ? `<small>発${m.start}</small>` : ''}`;
+            
+            // 重要：onclick属性を使わず、直接イベントを登録（これが最強のバグ対策）
+            btn.onclick = () => window.addMove(m);
+            
+            gridDiv.appendChild(btn);
         });
-        html += `</div></div>`;
+        
+        catDiv.appendChild(gridDiv);
+        container.appendChild(catDiv);
         
         if (cat.hasFollowupSlot) {
-            html += `<div class="category highlight" data-category="followup"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
+            const fCatDiv = document.createElement("div");
+            fCatDiv.className = "category highlight";
+            fCatDiv.setAttribute("data-category", "followup");
+            fCatDiv.innerHTML = `<h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div>`;
+            container.appendChild(fCatDiv);
         }
     });
-    container.innerHTML = html;
 }
 
 function updateFollowups(move) {
@@ -147,17 +161,21 @@ function updateFollowups(move) {
     if (!fContainer) return;
 
     if (move.followups && move.followups.length > 0) {
-        fContainer.innerHTML = move.followups.map(f => {
-            const fJson = JSON.stringify(f).replace(/'/g, "\\'");
-            return `<button class="followup-btn active" onclick="addMove('${fJson}')">${f.name}</button>`;
-        }).join("");
+        fContainer.innerHTML = ""; 
+        move.followups.forEach(f => {
+            const btn = document.createElement("button");
+            btn.className = "followup-btn active";
+            btn.innerText = f.name;
+            btn.onclick = () => window.addMove(f); // 直接オブジェクトを渡す
+            fContainer.appendChild(btn);
+        });
     } else {
         fContainer.innerHTML = "派生なし";
     }
 }
 
 /**
- * 4. ステータス・表示更新
+ * 5. ステータス・表示更新
  */
 function updateStats() {
     const totalDmg = combo.reduce((s, m) => s + (m.dmg || 0), 0);
@@ -177,7 +195,6 @@ function updateComboDisplay() {
     }
 }
 
-// プロSE仕様：コンボ欄を右端へオートスクロール
 function scrollToEnd() {
     const display = document.getElementById("comboDisplay");
     if(display) {
@@ -191,7 +208,7 @@ function scrollToEnd() {
 }
 
 /**
- * 5. 共有・読み込み
+ * 6. 共有機能
  */
 window.copyShareUrl = () => {
     try {
