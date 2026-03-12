@@ -1,59 +1,44 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kimberly Combo Tool Pro</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+<meta charset="UTF-8">
+<title>ST6 Combo Tool</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-dark">
-<header>
-    <h1>Kimberly Combo Tool</h1>
-    <div class="header-controls">
-        <div class="theme-select">
-            <button id="btn-theme-dark">Dark</button>
-            <button id="btn-theme-pink">Pink</button>
-            <button id="btn-theme-blue">Blue</button>
-        </div>
-        <select id="page-selector">
-            <option value="index.html" selected>コンボ作成</option>
-            <option value="edit.html">編集・削除</option>
-        </select>
-    </div>
-</header>
 
-<main class="app-container">
-    <section class="sticky-top-section">
-        <div class="status-bar">
-            <div id="cornerSwitcher" class="btn-toggle">場所: 中央</div>
-            <div id="driveCount" class="gauge-badge drive-gauge">Drive: 0</div>
-            <div id="saCount" class="gauge-badge sa-gauge">SA: 0</div>
-            <div id="damageCount" class="damage-badge">Damage: 0</div>
-        </div>
-        <div id="comboDisplay" class="combo-display"></div>
-        <div class="main-controls">
-            <button id="odSwitcher" class="btn-od-toggle">ODモード: OFF</button>
-            <button id="btn-undo" class="btn-undo">Undo</button>
-            <button id="btn-clear" class="btn-clear">Clear</button>
-        </div>
-        <div class="save-area">
-            <input type="text" id="comboName" placeholder="コンボ名（例：画面端 2MP始動）">
-            <button id="btn-save" class="btn-save">保存</button>
-        </div>
-    </section>
+<body>
 
-    <nav class="category-nav">
-        <button data-jump="normal">通常</button>
-        <button data-jump="unique">特殊</button>
-        <button data-jump="special">必殺</button>
-        <button data-jump="super">SA</button>
-    </nav>
+<h1>ST6 Combo Tool</h1>
 
-    <section id="moveList" class="moves-section-horizontal"></section>
-</main>
+<div class="panel">
 
-<!-- index.html の末尾付近 -->
-    <script type="module" src="app.js"></script>
+<input id="comboName" placeholder="ルート名">
+<input id="comboCategory" placeholder="カテゴリ">
+
+<button onclick="saveCombo()">保存</button>
+<button onclick="clearCombo()">CLEAR</button>
+
+<label class="darkToggle">
+<input type="checkbox" onchange="toggleDark()">
+ダークモード
+</label>
+
+</div>
+
+<div id="comboArea"></div>
+
+<div id="damage">
+合計ダメージ : <span id="damageValue">0</span>
+</div>
+
+<div id="moves"></div>
+
+<div class="category">
+<h3>派生</h3>
+<div id="followups">派生技なし</div>
+</div>
+
+<script src="app.js"></script>
+
 </body>
-
 </html>
