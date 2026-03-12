@@ -1,119 +1,52 @@
-/* --- 1. 変数とテーマ（維持） --- */
+/* --- 1. 変数とテーマ --- */
 :root { --accent-glow: rgba(255, 255, 255, 0.2); }
 .theme-dark   { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; --border: #30363d; }
 .theme-blue   { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; --border: #233554; }
-.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; --border: #4a2d39; }
 .theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; --text: #ffffff; --border: #44337a; }
 .theme-green  { --bg: #0b1a0e; --card: #1b2e1f; --accent: #93f9bd; --text: #ffffff; --border: #2d4a39; }
+.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; --border: #4a2d39; }
 .theme-orange { --bg: #1a100b; --card: #2e1f1b; --accent: #f9bd93; --text: #ffffff; --border: #4a392d; }
 .theme-cyan   { --bg: #0b1a1a; --card: #1b2e2e; --accent: #93f9f9; --text: #ffffff; --border: #2d4a4a; }
-/* --- 2. レイアウト基盤（ここが重要） --- */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* 全体のスクロールを禁止 */
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', sans-serif;
-}
 
-/* 画面全体を縦に割る */
-.app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
+/* --- 2. レイアウト基盤 --- */
+html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
+.app-container { display: flex; flex-direction: column; height: 100vh; }
 
-/* --- 3. 固定エリア（クリックを邪魔しない設定） --- */
+/* --- 3. 固定エリア（z-indexで最前面へ） --- */
 header, .sticky-top-section, .category-nav {
-    flex-shrink: 0; /* 縮まない */
-    position: relative;
-    z-index: 10; /* 技リストより上に配置 */
-    background: var(--bg);
+    flex-shrink: 0; position: relative; z-index: 1000; background: var(--bg);
 }
+header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 2px solid var(--border); }
+.sticky-top-section { padding: 15px; border-bottom: 1px solid var(--border); }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    border-bottom: 2px solid var(--border);
-}
-
-.sticky-top-section {
-    padding: 15px;
-    border-bottom: 1px solid var(--border);
-}
-
-/* --- 4. コンボ表示とボタン（クリック可能にする） --- */
+/* --- 4. コンボ表示とコントロール --- */
 .combo-display {
-    background: rgba(0,0,0,0.4);
-    border: 2px solid var(--accent);
-    border-radius: 8px;
-    padding: 10px;
-    min-height: 60px;
-    display: flex;
-    overflow-x: auto;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
+    background: rgba(0,0,0,0.4); border: 2px solid var(--accent); border-radius: 8px;
+    padding: 10px; min-height: 60px; display: flex; overflow-x: auto; align-items: center; gap: 8px; margin-bottom: 10px;
 }
+.main-controls, .save-area, .header-controls { display: flex; gap: 8px; margin-bottom: 10px; position: relative; z-index: 1100; }
 
-.main-controls, .save-area, .header-controls {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-    position: relative;
-    z-index: 20; /* ボタンを最前面へ */
-}
-
-/* --- 5. 技リスト（横スクロールエリア） --- */
+/* --- 5. 技リスト（横スクロール・z-indexを下げる） --- */
 .moves-section-horizontal {
-    flex-grow: 1; /* 残りのスペースをすべて使う */
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 15px;
-    gap: 15px;
-    background: rgba(0,0,0,0.1);
-    -webkit-overflow-scrolling: touch;
-    z-index: 1; /* 固定エリアより下に配置 */
+    flex-grow: 1; display: flex; overflow-x: auto; overflow-y: hidden; padding: 15px; gap: 15px;
+    background: rgba(0,0,0,0.1); -webkit-overflow-scrolling: touch; z-index: 1;
 }
-
-.category {
-    flex: 0 0 auto;
-    min-width: 280px;
-    background: var(--card);
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    height: fit-content;
-}
+.category { flex: 0 0 auto; min-width: 280px; background: var(--card); padding: 12px; border-radius: 10px; border: 1px solid var(--border); height: fit-content; }
+.category h3 { border-left: 4px solid var(--accent); padding-left: 10px; margin: 0 0 10px 0; font-size: 0.9rem; text-transform: uppercase; }
 
 /* --- 6. パーツ装飾（テキスト版） --- */
-.move-text-wrapper {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--accent);
-    padding: 4px 10px;
-    border-radius: 4px;
-    display: inline-block;
-}
-
+.move-text-wrapper { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px; display: inline-block; }
 .move-name-txt { font-weight: bold; font-size: 14px; }
-.combo-arrow { font-size: 18px; color: var(--accent); margin: 0 5px; }
+.combo-arrow { font-size: 18px; color: var(--accent); margin: 0 5px; font-weight: bold; }
 
-/* ボタン基本設定 */
-button {
-    border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-weight: bold;
-    cursor: pointer;
-    background: var(--border);
-    color: white;
-}
-
+/* ボタン基本 */
+button { border: none; border-radius: 4px; padding: 8px 12px; font-weight: bold; cursor: pointer; background: var(--border); color: white; transition: 0.1s; }
+button:active { transform: translateY(2px); filter: brightness(0.8); }
+.active, .od-active { background: #d29922 !important; color: white !important; }
 .move-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .status-bar { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 5px; }
-.gauge-badge, .damage-badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; }
+.gauge-badge, .damage-badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; background: var(--card); border: 1px solid var(--border); }
+
+/* スクロールバー細分化 */
+::-webkit-scrollbar { height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
