@@ -13,9 +13,10 @@ const ICON_MAP = {
     "j": "jump.png"
 };
 
+// --- 既存のコマンド変換ロジック ---
 function parseCommandToIcons(cmd) {
     if (!cmd) return [];
-    const icons = [];
+    let icons = [];
     const longMotions = ["236", "214", "22", "66"];
     let remainingCmd = cmd;
 
@@ -32,13 +33,10 @@ function parseCommandToIcons(cmd) {
         }
     }
     
-    if (icons.length === 0 && ICON_MAP[cmd]) {
-        return [ICON_MAP[cmd]];
-    }
-    
     return icons.filter(Boolean);
 }
 
+// --- 既存のコンボ表示ロジック（そのまま） ---
 export function renderComboIcons(comboSteps) {
     if (!comboSteps || comboSteps.length === 0) return "";
 
@@ -69,4 +67,52 @@ export function renderComboIcons(comboSteps) {
 
         return `<div class="combo-step">${contentHtml}${arrowHtml}</div>`;
     }).join("");
+}
+
+// --- 【新規】技一覧の描画ロジック（横スクロール・ジャンプ対応） ---
+export function renderMoveList(moves, onMoveClick) {
+    const moveListArea = document.getElementById('moveList');
+    if (!moveListArea) return;
+    moveListArea.innerHTML = '';
+
+    // カテゴリーの定義
+    const categories = [
+        { id: 'normal', title: '通常技', types: ['normal'] },
+        { id: 'unique', title: '特殊技', types: ['unique'] },
+        { id: 'special', title: '必殺技', types: ['special'] },
+        { id: 'super', title: 'SA', types: ['super'] }
+    ];
+
+    categories.forEach(cat => {
+        // カテゴリーごとのコンテナ作成
+        const section = document.createElement('div');
+        section.className = 'category';
+        section.setAttribute('data-category', cat.id); // ジャンプ用に属性付与
+        
+        section.innerHTML = `<h3>${cat.title}</h3>`;
+        
+        const grid = document.createElement('div');
+        grid.className = 'move-grid';
+
+        // 該当する技を抽出
+        const filteredMoves = moves.filter(m => m.type === cat.id);
+        
+        filteredMoves.forEach(move => {
+            const btn = document.createElement('button');
+            btn.className = 'standingBtn'; // style.cssの既存クラスを適用
+            btn.innerHTML = `<span>${move.name}</span>`;
+            btn.onclick = () => {
+                onMoveClick(move);
+                // 追加した瞬間にコンボ欄を右端へオートスクロール
+                const display = document.getElementById('comboDisplay');
+                setTimeout(() => {
+                    display.scrollTo({ left: display.scrollWidth, behavior: 'smooth' });
+                }, 50);
+            };
+            grid.appendChild(btn);
+        });
+
+        section.appendChild(grid);
+        moveListArea.appendChild(section);
+    });
 }
