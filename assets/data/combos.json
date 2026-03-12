@@ -1,10 +1,9 @@
 [
   {
-    "id": "kimb_001",
-    "title": "基本コンボ",
-    "recipe": ["2MP", "DR", "2MP", "HP", "236KK"],
-    "damage": 2500,
-    "drive": -2.0,
-    "difficulty": "Easy"
+    "id": 1,
+    "title": "基本ターゲットコンボ",
+    "recipe": ["LP", "MP", "HP"],
+    "damage": 800,
+    "memo": "まずはこれから練習！"
   }
 ]
