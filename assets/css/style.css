@@ -8,22 +8,16 @@ font-family:sans-serif;
 header{
 
 text-align:center;
-border-bottom:2px solid black;
 padding:10px;
+border-bottom:2px solid black;
 
 }
 
-.topMenu{
+.comboBox{
 
-margin-top:5px;
-
-}
-
-.comboArea{
-
-border-bottom:2px solid black;
-padding:10px;
 background:#ddd;
+padding:10px;
+border-bottom:2px solid black;
 
 }
 
@@ -33,20 +27,26 @@ min-height:40px;
 
 }
 
-.jumpMenu{
+.comboButtons button{
+
+margin:5px;
+
+}
+
+.jump{
 
 padding:10px;
 border-bottom:2px solid black;
 
 }
 
-.jumpMenu button{
+.jump button{
 
-margin:3px;
+margin:4px;
 
 }
 
-.commandList{
+.command{
 
 height:400px;
 overflow-y:scroll;
@@ -54,17 +54,16 @@ padding:10px;
 
 }
 
-.commandList button{
+.command button{
 
 margin:4px;
 
 }
 
-.comboMove{
+/* 背景 */
 
-background:#ccc;
-padding:5px 10px;
-margin:3px;
-display:inline-block;
-
-}
+.bg1{background:white;}
+.bg2{background:#e8f0ff;}
+.bg3{background:#ffe8f0;}
+.bg4{background:#e8ffe8;}
+.bg5{background:#222;color:white;}
