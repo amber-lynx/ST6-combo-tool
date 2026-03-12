@@ -1,9 +1,10 @@
 /**
  * src/modules/renderer.js
+ * コンボデータを解析してHTML（アイコン表示）を生成するモジュール
  */
 
 const ICON_MAP = {
-    // ボタン系 (大文字小文字の違いに注意：GitHub上のファイル名に合わせてください)
+    // ボタン系 (大文字小文字はGitHubのファイル名に合わせる)
     "弱P": "LP.png", "中P": "MP.png", "強P": "HP.png",
     "弱K": "LK.png", "中K": "MK.png", "強K": "HK.png",
     "P": "P.png", "K": "K.png",
@@ -16,13 +17,13 @@ const ICON_MAP = {
 };
 
 /**
- * コマンド文字列（"2中P"など）を解析してアイコンの配列を返す内部関数
+ * コマンド文字列を解析してアイコンの配列を返す
  */
 function parseCommandToIcons(cmd) {
     if (!cmd) return [];
     const icons = [];
     
-    // 236, 214 などの3桁コマンドを優先的に探す
+    // 3桁コマンドを優先的にスキャン
     const longMotions = ["236", "214", "22", "66"];
     let remainingCmd = cmd;
 
@@ -33,28 +34,32 @@ function parseCommandToIcons(cmd) {
         }
     });
 
-    // 残りの1文字ずつ（方向キーやボタン）を解析
+    // 残りの1文字ずつをスキャン
     for (const char of remainingCmd) {
         if (ICON_MAP[char]) {
             icons.push(ICON_MAP[char]);
-        } else if (ICON_MAP[cmd]) { // もし全体が一致するならそれを使う
-            return [ICON_MAP[cmd]];
         }
     }
     
-    return icons.filter(Boolean); // nullを除去
+    // もし何も見つからず、かつcmd全体がMAPにあるならそれを使う
+    if (icons.length === 0 && ICON_MAP[cmd]) {
+        return [ICON_MAP[cmd]];
+    }
+    
+    return icons.filter(Boolean);
 }
 
+/**
+ * メインの描画関数
+ */
 export function renderComboIcons(comboSteps) {
     if (!comboSteps || comboSteps.length === 0) return "";
 
     return comboSteps.map((move, index) => {
-        // コマンド解析の実行
         const icons = parseCommandToIcons(move.cmd);
 
         let contentHtml = "";
         if (icons.length > 0) {
-            // 解析された複数のアイコン（例：2と中P）を並べる
             const iconImages = icons.map(img => 
                 `<img src="assets/icons/${img}" class="cmd-icon" alt="icon">`
             ).join("");
@@ -65,7 +70,6 @@ export function renderComboIcons(comboSteps) {
                     <span class="move-name-sub">${move.name}</span>
                 </div>`;
         } else {
-            // アイコンがない場合はテキスト表示
             contentHtml = `
                 <div class="move-text-wrapper">
                     <span class="move-name-txt">${move.name}</span>
@@ -78,50 +82,4 @@ export function renderComboIcons(comboSteps) {
 
         return `<div class="combo-step">${contentHtml}${arrowHtml}</div>`;
     }).join("");
-}
-/* --- コンボ表示用スタイル（renderer.jsと連動） --- */
-.combo-display {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    padding: 20px;
-    background: rgba(0,0,0,0.2);
-    border-radius: 8px;
-    border: 2px solid var(--accent);
-}
-
-.combo-step {
-    display: flex;
-    align-items: center;
-}
-
-.icon-group {
-    display: flex;
-    gap: 2px; /* 2 と 中P の間の隙間 */
-}
-
-.cmd-icon {
-    width: 32px; /* アイコンの大きさ */
-    height: 32px;
-    object-fit: contain;
-}
-
-.move-icon-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.move-name-sub {
-    font-size: 10px;
-    color: #8b949e;
-    margin-top: 2px;
-}
-
-.combo-arrow {
-    margin: 0 10px;
-    color: var(--accent);
-    font-weight: bold;
-    font-size: 20px;
-}
+} // ← ここにドットが紛れ込んでいないか確認してください
