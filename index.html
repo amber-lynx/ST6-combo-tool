@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kimberly Combo Tool</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -21,28 +21,37 @@
         </select>
     </div>
 </header>
-<main class="container">
-    <section class="combo-section">
+
+<main class="app-container">
+    <!-- 固定エリア：ステータス、コンボ表示、操作ボタン、保存 -->
+    <section class="sticky-top-section">
         <div class="status-bar">
             <div id="cornerSwitcher" class="btn-toggle" onclick="toggleCorner()">場所: 中央</div>
             <div id="driveCount" class="gauge-badge drive-gauge">Drive: 0</div>
             <div id="saCount" class="gauge-badge sa-gauge">SA: 0</div>
             <div id="damageCount" class="damage-badge">Damage: 0</div>
         </div>
+
+        <!-- コンボルート表示（ここ自体も長くなったら横スクロールするように設定） -->
         <div id="comboDisplay" class="combo-display"></div>
+
         <div class="main-controls">
             <button id="odSwitcher" class="btn-od-toggle" onclick="toggleOD()">ODモード: OFF</button>
             <button class="btn-undo" onclick="undo()">Undo</button>
             <button class="btn-clear" onclick="clearCombo()">Clear</button>
         </div>
+
         <div class="save-area">
             <input type="text" id="comboName" placeholder="コンボ名（例：画面端 2MP始動）">
             <button class="btn-save" onclick="saveComboRoute()">保存</button>
             <button id="shareBtn" class="btn-share" onclick="copyShareUrl()">共有URL</button>
         </div>
     </section>
-    <section id="moveList" class="moves-section"></section>
+
+    <!-- 可変エリア：技一覧（ここを横スクロールにする） -->
+    <section id="moveList" class="moves-section-horizontal"></section>
 </main>
+
 <script type="module" src="app.js"></script>
 </body>
 </html>
