@@ -36,35 +36,23 @@ function parseCommandToIcons(cmd) {
     return icons.filter(Boolean);
 }
 
-// --- 既存のコンボ表示ロジック（そのまま） ---
+// --- コンボ表示ロジック（アイコンを廃止してテキストのみに修正） ---
 export function renderComboIcons(comboSteps) {
     if (!comboSteps || comboSteps.length === 0) return "";
 
     return comboSteps.map((move, index) => {
-        const icons = parseCommandToIcons(move.cmd);
-        let contentHtml = "";
+        // アイコン判定を削除し、常にテキストを表示する構造にする
+        const contentHtml = `
+            <div class="move-text-wrapper">
+                <span class="move-name-txt">${move.name}</span>
+            </div>`;
 
-        if (icons.length > 0) {
-            const iconImages = icons.map(img => 
-                `<img src="assets/icons/${img}" class="cmd-icon" alt="icon">`
-            ).join("");
-            
-            contentHtml = `
-                <div class="move-icon-wrapper">
-                    <div class="icon-group">${iconImages}</div>
-                    <span class="move-name-sub">${move.name}</span>
-                </div>`;
-        } else {
-            contentHtml = `
-                <div class="move-text-wrapper">
-                    <span class="move-name-txt">${move.name}</span>
-                </div>`;
-        }
-
+        // 矢印（→）の処理
         const arrowHtml = index < comboSteps.length - 1 
             ? `<span class="combo-arrow">→</span>` 
             : "";
 
+        // 1つの技パーツとして組み立てる
         return `<div class="combo-step">${contentHtml}${arrowHtml}</div>`;
     }).join("");
 }
