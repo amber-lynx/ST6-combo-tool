@@ -3,8 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kimberly Combo Tool</title>
+    <title>Kimberly Combo Tool Pro</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* クイックジャンプ用の簡易補正 */
+        .category-nav {
+            display: flex;
+            gap: 8px;
+            padding: 5px 10px 10px;
+            overflow-x: auto;
+            background: var(--bg);
+            -webkit-overflow-scrolling: touch;
+        }
+        .category-nav button {
+            flex: 0 0 auto;
+            padding: 6px 15px;
+            font-size: 12px;
+            border-radius: 20px;
+            background: var(--card);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            cursor: pointer;
+        }
+        /* コンボ表示の自動スクロールを滑らかに */
+        #comboDisplay {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 <body class="theme-dark">
 <header>
@@ -23,7 +48,7 @@
 </header>
 
 <main class="app-container">
-    <!-- 固定エリア：ステータス、コンボ表示、操作ボタン、保存 -->
+    <!-- 固定エリア：ステータス・コンボ・操作 -->
     <section class="sticky-top-section">
         <div class="status-bar">
             <div id="cornerSwitcher" class="btn-toggle" onclick="toggleCorner()">場所: 中央</div>
@@ -32,7 +57,7 @@
             <div id="damageCount" class="damage-badge">Damage: 0</div>
         </div>
 
-        <!-- コンボルート表示（ここ自体も長くなったら横スクロールするように設定） -->
+        <!-- コンボ表示（自動スクロール対応） -->
         <div id="comboDisplay" class="combo-display"></div>
 
         <div class="main-controls">
@@ -44,14 +69,37 @@
         <div class="save-area">
             <input type="text" id="comboName" placeholder="コンボ名（例：画面端 2MP始動）">
             <button class="btn-save" onclick="saveComboRoute()">保存</button>
-            <button id="shareBtn" class="btn-share" onclick="copyShareUrl()">共有URL</button>
         </div>
     </section>
 
-    <!-- 可変エリア：技一覧（ここを横スクロールにする） -->
+    <!-- カテゴリージャンプ：技欄のすぐ上に配置 -->
+    <nav class="category-nav">
+        <button onclick="scrollToCategory('normal')">通常</button>
+        <button onclick="scrollToCategory('unique')">特殊</button>
+        <button onclick="scrollToCategory('special')">必殺</button>
+        <button onclick="scrollToCategory('super')">SA</button>
+    </nav>
+
+    <!-- スクロールエリア：技一覧 -->
     <section id="moveList" class="moves-section-horizontal"></section>
 </main>
 
 <script type="module" src="app.js"></script>
+
+<script>
+    // プロSE仕様：カテゴリーへの高速ジャンプ
+    function scrollToCategory(type) {
+        const target = document.querySelector(`[data-category="${type}"]`);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        }
+    }
+
+    // テーマ切替の簡易関数（app.js側にある場合は不要ですが念のため）
+    window.setTheme = function(theme) {
+        document.body.className = 'theme-' + theme;
+        localStorage.setItem('selected-theme', theme);
+    };
+</script>
 </body>
 </html>
