@@ -1,26 +1,31 @@
 // app.js
 import { renderComboIcons } from './src/modules/renderer.js';
 
+// --- 状態管理 (State) ---
 let combo = [];
 let isODMode = false;
 let isCorner = false;
-let movesData = null; // JSONから読み込むデータを保持
+let movesData = null; 
 
-// --- 初期化 ---
-async function init() {
+// --- 1. アプリの初期化 (Initialization) ---
+async function initApp() {
     try {
+        // JSONデータを読み込む
         const response = await fetch('./assets/data/move_list.json');
+        if (!response.ok) throw new Error("JSON読み込み失敗");
         movesData = await response.json();
         
         applyTheme();
         drawMoves();
         updateStats();
-    } catch (e) {
-        console.error("データの読み込みに失敗しました:", e);
+        console.log("App Initialized with moves:", movesData);
+    } catch (error) {
+        console.error("初期化エラー:", error);
+        alert("データの読み込みに失敗しました。フォルダ構成を確認してください。");
     }
 }
 
-// --- テーマ管理 ---
+// --- 2. テーマ・モード切り替え ---
 window.setTheme = (theme) => {
     localStorage.setItem("selectedTheme", theme);
     applyTheme();
@@ -31,7 +36,6 @@ function applyTheme() {
     document.body.className = 'theme-' + theme;
 }
 
-// --- モード切替 ---
 window.toggleOD = () => {
     isODMode = !isODMode;
     const btn = document.getElementById("odSwitcher");
@@ -39,7 +43,7 @@ window.toggleOD = () => {
         btn.classList.toggle("active", isODMode);
         btn.innerHTML = isODMode ? "ODモード: ON 🔥" : "ODモード: OFF";
     }
-    drawMoves();
+    drawMoves(); // ボタンの表示（名前）を更新
 };
 
 window.toggleCorner = () => {
@@ -51,55 +55,75 @@ window.toggleCorner = () => {
     }
 };
 
-// --- 描画ロジック ---
+// --- 3. 技ボタンの描画 (Rendering Buttons) ---
 function drawMoves() {
     const container = document.getElementById("moves");
     if (!container || !movesData) return;
     
     let html = "";
     
-    // 通常技 (JSONデータを使用するように修正)
-    html += `<div class="category"><h3>Normals</h3><div class="standingGrid">`;
-    [...movesData.standing, ...movesData.crouching].forEach(m => {
-        html += `<button class="standingBtn" onclick='addMove(${JSON.stringify(m)})'>
-            <span>${m.name}</span><small>発${m.start}/硬${m.guard > 0 ? '+'+m.guard : (m.guard || '-')}</small>
-        </button>`;
-    });
-    html += `</div></div>`;
+    // カテゴリごとの描画設定
+    const categories = [
+        { label: "Normals", data: [...movesData.standing, ...movesData.crouching], className: "standingGrid" },
+        { label: "Special Moves", data: movesData.special, className: "move-grid" },
+        { label: "Unique Attacks", data: movesData.unique, className: "move-grid" },
+        { label: "Throws", data: movesData.throws, className: "move-grid" },
+        { label: "Super Arts", data: movesData.sa, className: "move-grid", btnClass: "sa-btn" },
+        { label: "System", data: movesData.system, className: "move-grid", btnClass: "system-btn" }
+    ];
 
-    // 必殺技
-    html += `<div class="category"><h3>Special Moves</h3><div class="move-grid">`;
-    movesData.special.forEach(m => {
-        let name = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
-        let cls = (isODMode && m.hasOD) ? "class='od-active'" : "";
-        html += `<button ${cls} onclick='addMove(${JSON.stringify(m)})'>${name}</button>`;
+    categories.forEach(cat => {
+        html += `<div class="category"><h3>${cat.label}</h3><div class="${cat.className}">`;
+        cat.data.forEach(m => {
+            let displayName = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
+            let activeCls = (isODMode && m.hasOD) ? "od-active" : "";
+            let extraInfo = m.start ? `<small>発${m.start}/硬${m.guard || '-'}</small>` : "";
+            
+            // 引数として渡すために文字列化
+            const moveJson = JSON.stringify(m).replace(/'/g, "\\'");
+            
+            html += `
+                <button class="${cat.btnClass || ''} ${activeCls}" onclick="addMove('${moveJson}')">
+                    <span>${displayName}</span>${extraInfo}
+                </button>`;
+        });
+        html += `</div></div>`;
+        
+        // 必殺技の後に派生枠を挿入
+        if (cat.label === "Special Moves") {
+            html += `<div class="category highlight"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
+        }
     });
-    html += `</div></div>`;
-
-    // (中略) 他のカテゴリーも同様に movesData を参照して生成
     
     container.innerHTML = html;
 }
 
-// --- コンボ操作 ---
-window.addMove = (m) => {
+// --- 4. コンボ操作 (Combo Logic) ---
+window.addMove = (moveStr) => {
+    // 文字列をオブジェクトに戻す
+    const m = JSON.parse(moveStr);
+    
     let finalMove = { ...m };
     if (isODMode && m.hasOD) {
         finalMove.name = "OD" + m.name;
         finalMove.dmg = m.odDmg || m.dmg;
         finalMove.gauge = m.odGauge || 0;
     }
+    
     combo.push(finalMove);
     updateStats();
     updateComboDisplay();
     
-    // 派生技の処理
+    // 派生技ボタンの更新
     const fContainer = document.getElementById("followupList");
     if (m.followups) {
-        fContainer.innerHTML = m.followups.map(f => 
-            `<button class="followup-btn active" onclick='addMove(${JSON.stringify(f)})'>${f.name}</button>`
-        ).join("");
-    } else { fContainer.innerHTML = "派生なし"; }
+        fContainer.innerHTML = m.followups.map(f => {
+            const fJson = JSON.stringify(f).replace(/'/g, "\\'");
+            return `<button class="followup-btn active" onclick="addMove('${fJson}')">${f.name}</button>`;
+        }).join("");
+    } else {
+        fContainer.innerHTML = "派生なし";
+    }
 };
 
 window.undo = () => {
@@ -116,7 +140,7 @@ window.clearCombo = () => {
     document.getElementById("followupList").innerHTML = "派生なし";
 };
 
-// --- 更新系 ---
+// --- 5. 画面更新 (UI Update) ---
 function updateStats() {
     const totalDamage = combo.reduce((sum, m) => sum + (m.dmg || 0), 0);
     const totalGauge = combo.reduce((sum, m) => sum + (m.gauge || 0), 0);
@@ -125,7 +149,7 @@ function updateStats() {
 }
 
 function updateComboDisplay() {
-    const container = document.getElementById("combo");
+    const container = document.getElementById("combo"); // HTML側のIDに合わせる
     if (!container) return;
     
     if (combo.length === 0) {
@@ -133,14 +157,14 @@ function updateComboDisplay() {
         return;
     }
 
-    // ★ここで外部モジュールのアイコン描画を呼び出す
+    // 外部モジュールのレンダラーを使用
     container.innerHTML = renderComboIcons(combo);
 }
 
-// 保存
+// --- 6. 保存機能 ---
 window.saveComboRoute = () => {
     const name = document.getElementById("comboName").value.trim();
-    if (!name || combo.length === 0) return alert("コンボ名を入力してください");
+    if (!name || combo.length === 0) return alert("コンボ名を入力し、技を選択してください");
     
     const saved = JSON.parse(localStorage.getItem("comboRoutes") || "[]");
     saved.push({
@@ -152,9 +176,9 @@ window.saveComboRoute = () => {
         route: combo.map(c => c.name)
     });
     localStorage.setItem("comboRoutes", JSON.stringify(saved));
-    alert("保存完了！");
+    alert("コンボをローカルに保存しました！");
     clearCombo();
 };
 
-// 起動
-init();
+// アプリ起動
+initApp();
