@@ -9,6 +9,7 @@
 <body class="bg1">
 
 <header>
+
 <h1>Kimberly Combo Tool</h1>
 
 <div class="bg-buttons">
@@ -19,34 +20,39 @@
 <button onclick="changeBg(5)">BG5</button>
 </div>
 
-<a href="edit.html" target="_blank">編集ページ</a>
-
 </header>
+
 
 <section class="combo-area">
 
-<h2>コンボルート</h2>
+<h2>コンボ</h2>
 
 <div id="combo"></div>
 
+<div id="damage">合計ダメージ: 0</div>
+
 <button onclick="removeLast()">一つ削除</button>
 <button onclick="removeAll()">全削除</button>
+<button onclick="copyCombo()">コンボコピー</button>
 
 </section>
+
 
 <section class="shortcut">
 
 <a href="#normal">通常</a>
-<a href="#crouch">しゃがみ</a>
-<a href="#unique">特殊</a>
 <a href="#special">必殺</a>
-<a href="#sa">SA</a>
+<a href="#unique">特殊</a>
 <a href="#system">システム</a>
+<a href="#throw">投げ</a>
+<a href="#sa">SA</a>
 
 </section>
 
-<section class="command-area" id="command-list">
+
+<section id="command-list" class="command-area">
 </section>
+
 
 <script src="app.js"></script>
 
