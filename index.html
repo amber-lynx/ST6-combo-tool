@@ -1,60 +1,54 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>ST6 Combo Tool</title>
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body class="bg1">
-
 <header>
 
-<h1>Kimberly Combo Tool</h1>
+<h1>ST6 Combo Tool</h1>
 
-<div class="bg-buttons">
-<button onclick="changeBg(1)">BG1</button>
-<button onclick="changeBg(2)">BG2</button>
-<button onclick="changeBg(3)">BG3</button>
-<button onclick="changeBg(4)">BG4</button>
-<button onclick="changeBg(5)">BG5</button>
-</div>
+<input type="text" placeholder="技検索">
 
 </header>
 
 
-<section class="combo-area">
+<section class="combo">
 
 <h2>コンボ</h2>
 
 <div id="combo"></div>
 
-<div id="damage">合計ダメージ: 0</div>
-
-<button onclick="removeLast()">一つ削除</button>
-<button onclick="removeAll()">全削除</button>
-<button onclick="copyCombo()">コンボコピー</button>
+<button onclick="undo()">削除</button>
+<button onclick="clearCombo()">全削除</button>
 
 </section>
 
 
-<section class="shortcut">
+<section class="moves">
 
-<a href="#normal">通常</a>
-<a href="#special">必殺</a>
-<a href="#unique">特殊</a>
-<a href="#system">システム</a>
-<a href="#throw">投げ</a>
-<a href="#sa">SA</a>
+<div class="move-column">
+<h3>通常</h3>
+<div class="move-list" id="normal"></div>
+</div>
+
+<div class="move-column">
+<h3>特殊</h3>
+<div class="move-list" id="unique"></div>
+</div>
+
+<div class="move-column">
+<h3>必殺</h3>
+<div class="move-list" id="special"></div>
+</div>
+
+<div class="move-column">
+<h3>派生</h3>
+<div class="move-list" id="follow"></div>
+</div>
+
+<div class="move-column">
+<h3>SA</h3>
+<div class="move-list" id="sa"></div>
+</div>
+
+<div class="move-column">
+<h3>システム</h3>
+<div class="move-list" id="system"></div>
+</div>
 
 </section>
-
-
-<section id="command-list" class="command-area">
-</section>
-
-
-<script src="app.js"></script>
-
-</body>
-</html>
