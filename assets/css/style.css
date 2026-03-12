@@ -1,46 +1,112 @@
-/* --- 変数とテーマ --- */
-:root { --accent-glow: rgba(255, 255, 255, 0.2); }
-.theme-dark   { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; --border: #30363d; }
-.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; --border: #4a2d39; }
-.theme-blue   { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; --border: #233554; }
+body{
 
-/* --- 全体構造 --- */
-html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; background: var(--bg); color: var(--text); font-family: sans-serif; }
-.app-container { display: flex; flex-direction: column; height: 100vh; }
+font-family:sans-serif;
+background:#f4f4f4;
+color:#111;
+padding:20px;
 
-/* --- 上部固定エリア（前面へ） --- */
-header, .sticky-top-section, .category-nav {
-    flex-shrink: 0; position: relative; z-index: 1000; background: var(--bg);
-}
-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--border); }
-.sticky-top-section { padding: 15px; border-bottom: 1px solid var(--border); }
-
-/* --- コンボ欄 --- */
-.combo-display {
-    background: rgba(0,0,0,0.4); border: 2px solid var(--accent); border-radius: 8px;
-    padding: 10px; min-height: 60px; display: flex; overflow-x: auto; align-items: center; gap: 8px; margin-bottom: 10px;
 }
 
-/* --- 下部：技リスト（背面へ） --- */
-.moves-section-horizontal {
-    flex-grow: 1; display: flex; overflow-x: auto; overflow-y: hidden; padding: 15px; gap: 15px;
-    background: rgba(0,0,0,0.05); -webkit-overflow-scrolling: touch; z-index: 1;
+body.dark{
+
+background:#111;
+color:white;
+
 }
-.category { flex: 0 0 auto; min-width: 280px; background: var(--card); padding: 12px; border-radius: 10px; border: 1px solid var(--border); height: fit-content; }
-.category h3 { border-left: 4px solid var(--accent); padding-left: 10px; margin: 0 0 10px 0; font-size: 0.9rem; }
 
-/* --- パーツ装飾 --- */
-.move-text-wrapper { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px; display: inline-block; }
-.move-name-txt { font-weight: bold; font-size: 14px; }
-.combo-arrow { font-size: 18px; color: var(--accent); margin: 0 5px; font-weight: bold; }
+h1{
 
-/* --- ボタン設定 --- */
-button { border: none; border-radius: 4px; padding: 8px 12px; font-weight: bold; cursor: pointer; background: var(--border); color: white; transition: 0.1s; position: relative; z-index: 1001; }
-button:active { transform: translateY(2px); }
-.move-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.status-bar { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 5px; }
-.main-controls { display: flex; gap: 8px; margin-bottom: 10px; }
+margin-bottom:10px;
 
-/* スクロールバー */
-::-webkit-scrollbar { height: 6px; }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+}
+
+.panel{
+
+margin-bottom:20px;
+
+}
+
+.panel input{
+
+padding:6px;
+margin-right:5px;
+
+}
+
+button{
+
+padding:6px 10px;
+margin:3px;
+cursor:pointer;
+
+}
+
+.category{
+
+margin-top:25px;
+
+}
+
+.grid{
+
+display:grid;
+grid-template-columns:repeat(3,auto);
+gap:8px;
+
+}
+
+.grid2{
+
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+
+}
+
+.standingBtn{
+
+display:flex;
+flex-direction:column;
+align-items:center;
+
+}
+
+.standingBtn img{
+
+width:60px;
+height:60px;
+
+}
+
+/* ↑ アイコンサイズ変更ここ */
+
+#comboArea{
+
+min-height:40px;
+border:2px dashed #888;
+padding:10px;
+margin-bottom:10px;
+
+}
+
+.comboMove{
+
+display:inline-block;
+padding:6px 10px;
+background:#ddd;
+margin-right:5px;
+cursor:grab;
+
+}
+
+body.dark .comboMove{
+
+background:#333;
+
+}
+
+.arrow{
+
+margin-right:5px;
+
+}
