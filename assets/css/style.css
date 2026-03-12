@@ -155,3 +155,32 @@ button:active { transform: scale(0.95); }
     font-weight: bold;
     margin: 0 5px;
 }
+/* --- 修正：重なり順とスクロール範囲の調整 --- */
+
+/* 1. 固定エリアを最前面に（z-indexを追加） */
+.sticky-top-section {
+    position: relative;
+    z-index: 100; 
+    background: var(--bg);
+}
+
+/* 2. ヘッダーもクリックできるように前面へ */
+header {
+    position: relative;
+    z-index: 101;
+    background: var(--bg);
+}
+
+/* 3. 技リストが上に重ならないように設定 */
+.moves-section-horizontal {
+    z-index: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* 念のため固定エリアと被らないよう明示 */
+}
+
+/* 4. カテゴリージャンプ（タブ）もクリック可能に */
+.category-nav {
+    position: relative;
+    z-index: 102;
+}
