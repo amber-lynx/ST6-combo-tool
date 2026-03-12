@@ -20,14 +20,17 @@ async function init() {
         
         // URLからのコンボ読み込み機能（共有リンク対応）
         loadFromUrl();
+        console.log("App Initialized successfully");
     } catch (e) {
         console.error("初期化エラー:", e);
-        document.getElementById("moveList").innerHTML = "<p>データの読み込みに失敗しました。パスを確認してください。</p>";
+        const listEl = document.getElementById("moveList");
+        if(listEl) listEl.innerHTML = "<p>データの読み込みに失敗しました。パスを確認してください。</p>";
     }
 }
 
 /**
  * 2. グローバル関数 (window登録)
+ * これによりHTMLのonclickから呼べるようになります
  */
 window.setTheme = (theme) => {
     localStorage.setItem("selectedTheme", theme);
@@ -59,42 +62,46 @@ window.toggleCorner = () => {
 };
 
 window.addMove = (moveStr) => {
-    const m = JSON.parse(moveStr);
-    let finalMove = { ...m };
-    
-    // ODモード時のダメージとコスト計算
-    if (isODMode && m.hasOD) {
-        finalMove.name = "OD" + m.name;
-        finalMove.dmg = m.odDmg || m.dmg;
-        finalMove.drive = m.odGauge || 0;
-    } else {
-        finalMove.drive = m.gauge || 0;
+    console.log("Adding move:", moveStr); // デバッグ用
+    try {
+        const m = JSON.parse(moveStr);
+        let finalMove = { ...m };
+        
+        if (isODMode && m.hasOD) {
+            finalMove.name = "OD" + m.name;
+            finalMove.dmg = m.odDmg || m.dmg;
+            finalMove.drive = m.odGauge || 0;
+        } else {
+            finalMove.drive = m.gauge || 0;
+        }
+
+        combo.push(finalMove);
+        updateStats();
+        updateComboDisplay();
+        updateFollowups(m);
+    } catch(e) {
+        console.error("addMove Error:", e);
     }
-
-    combo.push(finalMove);
-    updateStats();
-    updateComboDisplay();
-
-    // 派生技の描画更新
-    updateFollowups(m);
 };
 
 window.undo = () => { 
     combo.pop(); 
     updateStats(); 
     updateComboDisplay(); 
-    document.getElementById("followupList").innerHTML = "派生なし";
+    const fList = document.getElementById("followupList");
+    if(fList) fList.innerHTML = "派生なし";
 };
 
 window.clearCombo = () => { 
     combo = []; 
     updateStats(); 
     updateComboDisplay(); 
-    document.getElementById("followupList").innerHTML = "派生なし";
+    const fList = document.getElementById("followupList");
+    if(fList) fList.innerHTML = "派生なし";
 };
 
 /**
- * 3. 描画ロジック (カテゴリを全て網羅)
+ * 3. 描画ロジック
  */
 function drawMoves() {
     const container = document.getElementById("moveList");
@@ -115,6 +122,7 @@ function drawMoves() {
         cat.data.forEach(m => {
             const displayName = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
             const odCls = (isODMode && m.hasOD) ? "od-active" : "";
+            // シングルクォーテーションをエスケープしてJSON文字列化
             const moveJson = JSON.stringify(m).replace(/'/g, "\\'");
             
             html += `<button class="${odCls}" onclick="addMove('${moveJson}')">
@@ -124,7 +132,6 @@ function drawMoves() {
         });
         html += `</div></div>`;
         
-        // 必殺技の下に派生表示エリアを確保
         if (cat.hasFollowupSlot) {
             html += `<div class="category highlight"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
         }
@@ -153,22 +160,19 @@ function updateStats() {
     const totalDmg = combo.reduce((s, m) => s + (m.dmg || 0), 0);
     const totalDrive = combo.reduce((s, m) => s + (m.drive || 0), 0);
     
-    // SAゲージ計算（SA技以外がヒットすると少し溜まるシミュレーション）
-    const totalSA = combo.reduce((s, m) => {
-        if(m.cmd && (m.cmd.includes("236236") || m.cmd.includes("214214"))) return s; // SA自体では溜まらない
-        return s + (m.dmg ? m.dmg * 0.1 : 0); // ダメージの10%がゲージになると仮定
-    }, 0);
-
-    document.getElementById("damageCount").innerText = `Damage: ${totalDmg}`;
-    document.getElementById("driveCount").innerText = `Drive: -${totalDrive.toFixed(1)}`;
+    const dmgEl = document.getElementById("damageCount");
+    const driveEl = document.getElementById("driveCount");
     
-    const saEl = document.getElementById("saCount");
-    if(saEl) saEl.innerText = `SA Gain: ${Math.floor(totalSA)}`;
+    if(dmgEl) dmgEl.innerText = `Damage: ${totalDmg}`;
+    if(driveEl) driveEl.innerText = `Drive: -${totalDrive.toFixed(1)}`;
 }
 
 function updateComboDisplay() {
+    // HTML側のIDが "comboDisplay" であることを想定
     const display = document.getElementById("comboDisplay");
-    if(display) display.innerHTML = renderComboIcons(combo);
+    if(display) {
+        display.innerHTML = renderComboIcons(combo);
+    }
 }
 
 /**
@@ -179,10 +183,7 @@ window.copyShareUrl = () => {
         const comboData = combo.map(m => ({ name: m.name, cmd: m.cmd, dmg: m.dmg }));
         const data = btoa(encodeURIComponent(JSON.stringify(comboData)));
         const url = `${window.location.origin}${window.location.pathname}?c=${data}`;
-        
-        navigator.clipboard.writeText(url).then(() => {
-            alert("共有URLをコピーしました！");
-        });
+        navigator.clipboard.writeText(url).then(() => alert("共有URLをコピーしました！"));
     } catch (e) {
         alert("URLの作成に失敗しました。");
     }
@@ -203,5 +204,4 @@ function loadFromUrl() {
     }
 }
 
-// 実行
 init();
