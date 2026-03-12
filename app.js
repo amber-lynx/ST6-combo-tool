@@ -30,7 +30,6 @@ async function init() {
 
 /**
  * 2. グローバル関数 (window登録)
- * これによりHTMLのonclickから呼べるようになります
  */
 window.setTheme = (theme) => {
     localStorage.setItem("selectedTheme", theme);
@@ -61,10 +60,10 @@ window.toggleCorner = () => {
     }
 };
 
+// 技の追加
 window.addMove = (moveStr) => {
-    console.log("Adding move:", moveStr); // デバッグ用
     try {
-        const m = JSON.parse(moveStr);
+        const m = typeof moveStr === 'string' ? JSON.parse(moveStr) : moveStr;
         let finalMove = { ...m };
         
         if (isODMode && m.hasOD) {
@@ -79,6 +78,9 @@ window.addMove = (moveStr) => {
         updateStats();
         updateComboDisplay();
         updateFollowups(m);
+        
+        // プロSE仕様：追加時に自動スクロール
+        scrollToEnd();
     } catch(e) {
         console.error("addMove Error:", e);
     }
@@ -90,6 +92,7 @@ window.undo = () => {
     updateComboDisplay(); 
     const fList = document.getElementById("followupList");
     if(fList) fList.innerHTML = "派生なし";
+    scrollToEnd();
 };
 
 window.clearCombo = () => { 
@@ -101,28 +104,28 @@ window.clearCombo = () => {
 };
 
 /**
- * 3. 描画ロジック
+ * 3. 描画ロジック（横スクロール・カテゴリー対応版）
  */
 function drawMoves() {
     const container = document.getElementById("moveList");
     if (!container || !movesData) return;
     
     let html = "";
+    // カテゴリーIDをHTML側のジャンプ用ボタン(scrollToCategory)と一致させる
     const cats = [
-        { label: "Normals (通常技)", data: [...(movesData.standing || []), ...(movesData.crouching || [])], grid: "standingGrid" },
-        { label: "Unique Attacks (特殊技)", data: movesData.unique || [], grid: "move-grid" },
-        { label: "Special Moves (必殺技)", data: movesData.special || [], grid: "move-grid", hasFollowupSlot: true },
-        { label: "Throws (投げ)", data: movesData.throws || [], grid: "move-grid" },
-        { label: "Super Arts (SA)", data: movesData.sa || [], grid: "move-grid" },
-        { label: "System (システム)", data: movesData.system || [], grid: "move-grid" }
+        { id: "normal", label: "Normals (通常技)", data: [...(movesData.standing || []), ...(movesData.crouching || [])], grid: "standingGrid" },
+        { id: "unique", label: "Unique Attacks (特殊技)", data: movesData.unique || [], grid: "move-grid" },
+        { id: "special", label: "Special Moves (必殺技)", data: movesData.special || [], grid: "move-grid", hasFollowupSlot: true },
+        { id: "super", label: "Super Arts (SA)", data: movesData.sa || [], grid: "move-grid" },
+        { id: "system", label: "System (システム)", data: movesData.system || [], grid: "move-grid" }
     ];
 
     cats.forEach(cat => {
-        html += `<div class="category"><h3>${cat.label}</h3><div class="${cat.grid || 'move-grid'}">`;
+        // プロSE仕様：data-category属性を付与してジャンプ可能に
+        html += `<div class="category" data-category="${cat.id}"><h3>${cat.label}</h3><div class="${cat.grid || 'move-grid'}">`;
         cat.data.forEach(m => {
             const displayName = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
             const odCls = (isODMode && m.hasOD) ? "od-active" : "";
-            // シングルクォーテーションをエスケープしてJSON文字列化
             const moveJson = JSON.stringify(m).replace(/'/g, "\\'");
             
             html += `<button class="${odCls}" onclick="addMove('${moveJson}')">
@@ -133,7 +136,7 @@ function drawMoves() {
         html += `</div></div>`;
         
         if (cat.hasFollowupSlot) {
-            html += `<div class="category highlight"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
+            html += `<div class="category highlight" data-category="followup"><h3>Followups (派生技)</h3><div id="followupList" class="followup-grid">派生なし</div></div>`;
         }
     });
     container.innerHTML = html;
@@ -168,10 +171,22 @@ function updateStats() {
 }
 
 function updateComboDisplay() {
-    // HTML側のIDが "comboDisplay" であることを想定
     const display = document.getElementById("comboDisplay");
     if(display) {
         display.innerHTML = renderComboIcons(combo);
+    }
+}
+
+// プロSE仕様：コンボ欄を右端へオートスクロール
+function scrollToEnd() {
+    const display = document.getElementById("comboDisplay");
+    if(display) {
+        setTimeout(() => {
+            display.scrollTo({
+                left: display.scrollWidth,
+                behavior: 'smooth'
+            });
+        }, 50);
     }
 }
 
