@@ -123,3 +123,21 @@ function updateComboDisplay() {
 }
 
 init();
+
+// app.js の一番下に追加
+window.copyShareUrl = () => {
+    try {
+        // コンボの技名だけを抜き出して文字列にする
+        const comboNames = combo.map(m => m.name);
+        const data = btoa(encodeURIComponent(JSON.stringify(comboNames)));
+        const url = `${window.location.origin}${window.location.pathname}?c=${data}`;
+        
+        // クリップボードにコピー
+        navigator.clipboard.writeText(url).then(() => {
+            alert("共有URLをコピーしました！SNSなどでシェアしてください。");
+        });
+    } catch (e) {
+        console.error("共有URL作成エラー:", e);
+        alert("URLの作成に失敗しました。");
+    }
+};
