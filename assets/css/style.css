@@ -1,156 +1,229 @@
-/* --- 変数と基本設定（テーマ追加版） --- */
-/* 全テーマの色定義：背景、カード、アクセント（光る色）を一括管理 */
-.theme-dark   { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; }
-.theme-blue   { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; }
-.theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; --text: #ffffff; }
-.theme-green  { --bg: #0b1a0e; --card: #1b2e1f; --accent: #93f9bd; --text: #ffffff; }
-.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; }
-.theme-orange { --bg: #1a100b; --card: #2e1f1b; --accent: #f9bd93; --text: #ffffff; }
-.theme-cyan   { --bg: #0b1a1a; --card: #1b2e2e; --accent: #93f9f9; --text: #ffffff; }
+/* --- 変数と基本設定（テーマ拡張版） --- */
+:root {
+    --accent-glow: rgba(255, 255, 255, 0.2);
+}
+
+.theme-dark   { --bg: #0e1117; --card: #1c1f26; --accent: #58a6ff; --text: #ffffff; --border: #30363d; }
+.theme-blue   { --bg: #0a192f; --card: #172a45; --accent: #64ffda; --text: #ffffff; --border: #233554; }
+.theme-purple { --bg: #1a0b2e; --card: #2d1b4e; --accent: #bd93f9; --text: #ffffff; --border: #44337a; }
+.theme-green  { --bg: #0b1a0e; --card: #1b2e1f; --accent: #93f9bd; --text: #ffffff; --border: #2d4a39; }
+.theme-pink   { --bg: #1a0b14; --card: #2e1b23; --accent: #f993bd; --text: #ffffff; --border: #4a2d39; }
+.theme-orange { --bg: #1a100b; --card: #2e1f1b; --accent: #f9bd93; --text: #ffffff; --border: #4a392d; }
+.theme-cyan   { --bg: #0b1a1a; --card: #1b2e2e; --accent: #93f9f9; --text: #ffffff; --border: #2d4a4a; }
 
 /* 全体への適用 */
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     padding: 20px;
+    margin: 0;
     transition: background 0.3s ease, color 0.3s ease;
     line-height: 1.4;
+    display: flex;
+    justify-content: center;
 }
 
-/* ボタンやコンボ表示、カード類をテーマのカード色と同期させる */
-.standingBtn, 
-.combo-display, 
-.combo-card, 
-.move-grid button, 
-button {
-    background: var(--card);
-    transition: background 0.3s ease;
+.container {
+    width: 100%;
+    max-width: 800px;
 }
 
-/* コンボの文字や矢印、ゲージバッジをテーマのアクセント色と同期させる */
-.combo-unit, 
-.gauge-badge, 
-.combo-unit .arrow {
+/* --- ヘッダー（スト6ロゴ風） --- */
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 25px; 
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 15px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     color: var(--accent);
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
 }
 
-.gauge-badge {
-    border-color: var(--accent);
-}
-/* --- ヘッダー --- */
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
-.header-controls { display: flex; gap: 10px; align-items: center; }
-.theme-select button { padding: 5px 10px; cursor: pointer; background: #30363d; color: white; border: none; border-radius: 4px; font-size: 12px; }
-
-/* --- ステータスバー（ダメージ・ゲージ・場所） --- */
+/* --- ステータスバー（リソース管理） --- */
 .status-bar {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 12px;
+    margin-bottom: 15px;
     justify-content: flex-end;
     align-items: center;
-    flex-wrap: wrap;
 }
-.damage-badge { background: #f85149; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em; box-shadow: 0 0 10px rgba(248, 81, 73, 0.4); }
-.gauge-badge { background: var(--card); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 20px; color: var(--accent); font-weight: bold; font-size: 0.9em; }
-.btn-toggle { background: #30363d; padding: 6px 15px; border-radius: 20px; cursor: pointer; border: 1px solid #444; font-size: 0.85em; transition: 0.2s; }
-.btn-toggle.active { background: #d29922; border-color: #ffeb3b; color: white; }
 
-/* --- コンボ表示エリア --- */
-.combo-display {
-    background: var(--card);
-    border: 2px solid #30363d;
-    border-radius: 12px;
-    padding: 20px;
-    min-height: 60px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
+.damage-badge { 
+    background: #f85149; 
+    padding: 8px 18px; 
+    border-radius: 4px; 
+    font-weight: 800; 
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
 }
-.combo-unit { font-weight: bold; color: var(--accent); display: flex; align-items: center; }
-.arrow { margin: 0 8px; color: #8b949e; opacity: 0.6; }
-.placeholder { color: #8b949e; font-style: italic; }
 
-/* --- メインコントロール（OD/Undo/Clear） --- */
-.main-controls { display: flex; gap: 10px; margin-bottom: 15px; }
-button { border: none; border-radius: 4px; padding: 10px 15px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; }
-button:hover { filter: brightness(1.2); transform: translateY(-1px); }
+.gauge-badge { 
+    background: var(--card); 
+    border: 2px solid var(--accent); 
+    padding: 6px 14px; 
+    border-radius: 4px; 
+    color: var(--accent); 
+    font-weight: bold;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
 
-.btn-od-toggle { background: #21262d; border: 2px solid #30363d; color: #8b949e; flex: 1.5; }
-.btn-od-toggle.active { background: #d29922; color: white; border-color: #ffeb3b; box-shadow: 0 0 15px rgba(210, 153, 34, 0.5); }
-.btn-undo { background: #d29922; }
-.btn-clear { background: #f85149; }
+.btn-toggle { 
+    background: var(--border); 
+    padding: 8px 18px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: bold;
+    border: 1px solid transparent;
+}
+.btn-toggle.active { background: #d29922; border-color: #ffeb3b; }
 
-/* --- 保存エリア --- */
-.save-area { display: flex; gap: 10px; margin-bottom: 30px; }
-input[type="text"] { background: #0d1117; border: 1px solid #30363d; color: white; padding: 10px; border-radius: 4px; flex: 1; }
-.btn-save { background: #238636; }
-
-/* --- 技リスト --- */
-.standingGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 450px; margin-bottom: 20px; }
-.standingBtn { background: var(--card); border: 1px solid #30363d; color: white; padding: 10px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; }
-.standingBtn img { width: 40px; height: 40px; margin-bottom: 4px; }
-.standingBtn small { font-size: 0.7em; color: #8b949e; }
-
-.move-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px; }
-.move-grid button, .followup-btn { background: #21262d; border: 1px solid #30363d; padding: 12px; font-size: 14px; text-align: left; }
-.od-active { border: 1px solid #d29922 !important; color: #ffeb3b !important; background: rgba(210, 153, 34, 0.1) !important; }
-
-/* --- 派生エリア --- */
-.category.highlight { border: 1px solid #d29922; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-.followup-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-.followup-btn { background: #d29922 !important; }
-
-/* --- 保存カード (edit.html用) --- */
-.combo-card { background: var(--card); border: 1px solid #30363d; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-.tag { background: #30363d; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; margin-right: 10px; }
-.memo-text { font-size: 0.85em; color: #aaa; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px; margin: 8px 0; }
-.card-actions { display: flex; gap: 10px; margin-top: 10px; }
-.v-btn { background: #ff4444; }
-.d-btn { background: #f85149; }
-/* コンボ表示エリアのレイアウト */
+/* --- コンボ表示エリア（最重要） --- */
 .combo-display {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    min-height: 80px;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0,0,0,0.4);
+    border: 2px solid var(--accent);
     border-radius: 8px;
-    border: 1px solid var(--accent-color, #ff00ff);
+    padding: 20px;
+    min-height: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
 }
 
 .combo-step {
     display: flex;
     align-items: center;
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* コマンドアイコンのサイズ設定 */
-.cmd-icon {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 .move-icon-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: var(--card);
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.cmd-icon {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
 }
 
 .move-name-sub {
     font-size: 10px;
-    color: #ccc;
-    margin-top: 2px;
+    color: #8b949e;
+    margin-top: 4px;
+    font-weight: bold;
 }
 
 .combo-arrow {
-    margin: 0 8px;
+    margin: 0 10px;
     font-weight: bold;
-    color: var(--accent-color, #ff00ff);
-    font-size: 20px;
+    color: var(--accent);
+    font-size: 24px;
+    text-shadow: 0 0 5px var(--accent);
+}
+
+/* --- コントロールボタン系 --- */
+.main-controls { display: flex; gap: 12px; margin-bottom: 20px; }
+button { 
+    border: none; 
+    border-radius: 4px; 
+    padding: 12px 20px; 
+    font-weight: 900; 
+    cursor: pointer; 
+    text-transform: uppercase;
+    transition: 0.2s;
+}
+
+.btn-od-toggle { background: var(--border); color: #8b949e; flex: 1.5; border: 2px solid transparent; }
+.btn-od-toggle.active { 
+    background: #d29922; 
+    color: white; 
+    border-color: #ffeb3b; 
+    box-shadow: 0 0 15px rgba(210, 153, 34, 0.6); 
+}
+.btn-undo { background: #d29922; color: white; }
+.btn-clear { background: #f85149; color: white; }
+
+/* --- 技リストエリア --- */
+.category h3 {
+    border-left: 4px solid var(--accent);
+    padding-left: 10px;
+    margin: 25px 0 15px 0;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+.standingGrid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 12px; 
+}
+
+.standingBtn { 
+    background: var(--card); 
+    border: 1px solid var(--border); 
+    color: white; 
+    padding: 12px; 
+    border-radius: 6px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    transition: 0.2s;
+}
+.standingBtn:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+
+.move-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px; 
+}
+
+.move-grid button { 
+    background: var(--card); 
+    border: 1px solid var(--border); 
+    text-align: left; 
+    font-size: 14px;
+}
+
+.od-active { 
+    border: 2px solid #d29922 !important; 
+    color: #ffeb3b !important; 
+    background: rgba(210, 153, 34, 0.1) !important; 
+}
+
+/* --- 派生エリア --- */
+.category.highlight { 
+    background: rgba(210, 153, 34, 0.05);
+    border: 2px dashed #d29922; 
+    padding: 15px; 
+    border-radius: 8px; 
+}
+
+.followup-btn { background: #d29922 !important; color: white; }
+
+/* --- レスポンシブ (スマホ対応) --- */
+@media (max-width: 600px) {
+    .standingGrid { grid-template-columns: repeat(2, 1fr); }
+    .status-bar { justify-content: center; }
+    h1 { font-size: 1.2rem; }
 }
