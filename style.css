@@ -1,0 +1,64 @@
+body{
+margin:0;
+font-family:sans-serif;
+}
+
+/* header */
+
+header{
+text-align:center;
+padding:10px;
+border-bottom:2px solid black;
+}
+
+/* コンボ */
+
+.combo-area{
+position:sticky;
+top:0;
+background:white;
+padding:10px;
+border-bottom:2px solid black;
+z-index:10;
+}
+
+#combo{
+min-height:50px;
+padding:10px;
+border:1px solid gray;
+}
+
+/* ショートカット */
+
+.shortcut{
+padding:10px;
+border-bottom:1px solid black;
+}
+
+.shortcut a{
+margin-right:10px;
+}
+
+/* コマンドリスト */
+
+.command-area{
+height:400px;
+overflow-y:auto;
+padding:10px;
+}
+
+.command-section{
+margin-bottom:20px;
+}
+
+.command-section button{
+margin:5px;
+}
+
+/* 背景 */
+
+.bg1{background:#f4f4f4;}
+.bg2{background:#222;color:white;}
+.bg3{background:#002b36;color:white;}
+.bg4{background:#2f2f2f;color:white;}
+.bg5{background:#fff7e6;}
