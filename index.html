@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kimberly Combo Tool</title>
-    <!-- 修正：assets配下のCSSを参照 -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="theme-dark">
@@ -12,10 +11,9 @@
     <h1>Kimberly Combo Tool</h1>
     <div class="header-controls">
         <div class="theme-select">
-            <!-- ボタン類はそのままでOKですが、将来的にJSで一括生成すると管理が楽です -->
             <button onclick="setTheme('dark')">Dark</button>
-            <button onclick="setTheme('pink')">Pink</button> <!-- キンバリーカラー -->
-            <!-- ...他のボタン... -->
+            <button onclick="setTheme('pink')">Pink</button>
+            <button onclick="setTheme('blue')">Blue</button>
         </div>
         <select onchange="location.href=this.value">
             <option value="index.html" selected>コンボ作成</option>
@@ -27,13 +25,12 @@
     <section class="combo-section">
         <div class="status-bar">
             <div id="cornerSwitcher" class="btn-toggle" onclick="toggleCorner()">場所: 中央</div>
-            <!-- ドライブゲージとSAゲージの表示を分けると「スト6感」が出ます -->
             <div id="driveCount" class="gauge-badge drive-gauge">Drive: 0</div>
             <div id="saCount" class="gauge-badge sa-gauge">SA: 0</div>
             <div id="damageCount" class="damage-badge">Damage: 0</div>
         </div>
         
-        <!-- コンボ表示エリア（ここにアイコンが並ぶ） -->
+        <!-- コンボアイコンが表示されるエリア -->
         <div id="comboDisplay" class="combo-display"></div>
 
         <div class="main-controls">
@@ -45,15 +42,16 @@
         <div class="save-area">
             <input type="text" id="comboName" placeholder="コンボ名（例：画面端 2MP始動）">
             <button class="btn-save" onclick="saveComboRoute()">保存</button>
-            <button id="shareBtn" class="btn-share">共有リンクをコピー</button>
+            <button id="shareBtn" class="btn-share" onclick="copyShareUrl()">共有URL</button>
         </div>
     </section>
 
-    <!-- 技ボタンが自動生成されるエリア -->
-    <section id="moveList" class="moves-section"></section>
+    <!-- 技リストが自動生成されるエリア -->
+    <div id="movesContainer">
+        <section id="moveList" class="moves-section"></section>
+    </div>
 </main>
 
-<!-- 修正：type="module" を指定し、src/app.js（または直下）を読み込む -->
-<script **type="module"** src="app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
