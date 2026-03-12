@@ -1,57 +1,125 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kimberly Combo Tool</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body class="theme-dark">
-<header>
-    <h1>Kimberly Combo Tool</h1>
-    <div class="header-controls">
-        <div class="theme-select">
-            <button onclick="setTheme('dark')">Dark</button>
-            <button onclick="setTheme('pink')">Pink</button>
-            <button onclick="setTheme('blue')">Blue</button>
-        </div>
-        <select onchange="location.href=this.value">
-            <option value="index.html" selected>コンボ作成</option>
-            <option value="edit.html">編集・削除</option>
-        </select>
-    </div>
-</header>
-<main class="container">
-    <section class="combo-section">
-        <div class="status-bar">
-            <div id="cornerSwitcher" class="btn-toggle" onclick="toggleCorner()">場所: 中央</div>
-            <div id="driveCount" class="gauge-badge drive-gauge">Drive: 0</div>
-            <div id="saCount" class="gauge-badge sa-gauge">SA: 0</div>
-            <div id="damageCount" class="damage-badge">Damage: 0</div>
-        </div>
+import { renderComboIcons } from './src/modules/renderer.js';
+
+let combo = [];
+let isODMode = false;
+let isCorner = false;
+let movesData = null;
+
+/**
+ * 1. アプリ初期化
+ */
+async function init() {
+    try {
+        const response = await fetch('./assets/data/move_list.json');
+        if (!response.ok) throw new Error("JSONが見つかりません");
+        movesData = await response.json();
         
-        <!-- コンボアイコンが表示されるエリア -->
-        <div id="comboDisplay" class="combo-display"></div>
+        applyTheme();
+        drawMoves();
+        updateStats();
+    } catch (e) {
+        console.error("初期化エラー:", e);
+        // エラー時、ユーザーに分かりやすく表示
+        document.getElementById("moveList").innerHTML = "<p>データの読み込みに失敗しました。パスを確認してください。</p>";
+    }
+}
 
-        <div class="main-controls">
-            <button id="odSwitcher" class="btn-od-toggle" onclick="toggleOD()">ODモード: OFF</button>
-            <button class="btn-undo" onclick="undo()">Undo</button>
-            <button class="btn-clear" onclick="clearCombo()">Clear</button>
-        </div>
+/**
+ * 2. 関数をHTMLから呼べるように公開 (windowに登録)
+ */
+window.setTheme = (theme) => {
+    localStorage.setItem("selectedTheme", theme);
+    applyTheme();
+};
 
-        <div class="save-area">
-            <input type="text" id="comboName" placeholder="コンボ名（例：画面端 2MP始動）">
-            <button class="btn-save" onclick="saveComboRoute()">保存</button>
-            <button id="shareBtn" class="btn-share" onclick="copyShareUrl()">共有URL</button>
-        </div>
-    </section>
+function applyTheme() {
+    const theme = localStorage.getItem("selectedTheme") || "dark";
+    document.body.className = 'theme-' + theme;
+}
 
-    <!-- 技リストが自動生成されるエリア -->
-    <div id="movesContainer">
-        <section id="moveList" class="moves-section"></section>
-    </div>
-</main>
+window.toggleOD = () => {
+    isODMode = !isODMode;
+    const btn = document.getElementById("odSwitcher");
+    if(btn) {
+        btn.classList.toggle("active", isODMode);
+        btn.innerText = isODMode ? "ODモード: ON 🔥" : "ODモード: OFF";
+    }
+    drawMoves();
+};
 
-<script type="module" src="app.js"></script>
-</body>
-</html>
+window.toggleCorner = () => {
+    isCorner = !isCorner;
+    const btn = document.getElementById("cornerSwitcher");
+    if(btn) {
+        btn.innerText = isCorner ? "場所: 画面端 🧱" : "場所: 中央";
+    }
+};
+
+window.addMove = (moveStr) => {
+    // 文字列として渡されたJSONをオブジェクトに戻す
+    const m = JSON.parse(moveStr);
+    let finalMove = { ...m };
+    
+    if (isODMode && m.hasOD) {
+        finalMove.name = "OD" + m.name;
+        finalMove.dmg = m.odDmg || m.dmg;
+        finalMove.drive = m.odGauge || 0;
+    } else {
+        finalMove.drive = m.gauge || 0;
+    }
+
+    combo.push(finalMove);
+    updateStats();
+    updateComboDisplay();
+};
+
+window.undo = () => { combo.pop(); updateStats(); updateComboDisplay(); };
+window.clearCombo = () => { combo = []; updateStats(); updateComboDisplay(); };
+
+/**
+ * 3. 描画ロジック
+ */
+function drawMoves() {
+    const container = document.getElementById("moveList");
+    if (!container || !movesData) return;
+    
+    let html = "";
+    // 各カテゴリーをループしてボタンを生成
+    const cats = [
+        { label: "Normals", data: [...movesData.standing, ...movesData.crouching] },
+        { label: "Special Moves", data: movesData.special },
+        { label: "Unique Attacks", data: movesData.unique },
+        { label: "Super Arts", data: movesData.sa }
+    ];
+
+    cats.forEach(cat => {
+        html += `<div class="category"><h3>${cat.label}</h3><div class="move-grid">`;
+        cat.data.forEach(m => {
+            const displayName = (isODMode && m.hasOD) ? "OD" + m.name : m.name;
+            const odCls = (isODMode && m.hasOD) ? "od-active" : "";
+            // JSONデータを文字列として埋め込む（シングルクォート対策済み）
+            const moveJson = JSON.stringify(m).replace(/'/g, "\\'");
+            
+            html += `<button class="${odCls}" onclick="addMove('${moveJson}')">
+                        ${displayName}
+                    </button>`;
+        });
+        html += `</div></div>`;
+    });
+    container.innerHTML = html;
+}
+
+function updateStats() {
+    const totalDmg = combo.reduce((s, m) => s + (m.dmg || 0), 0);
+    const totalDrive = combo.reduce((s, m) => s + (m.drive || 0), 0);
+    document.getElementById("damageCount").innerText = `Damage: ${totalDmg}`;
+    document.getElementById("driveCount").innerText = `Drive: -${totalDrive.toFixed(1)}`;
+}
+
+function updateComboDisplay() {
+    const display = document.getElementById("comboDisplay");
+    // renderer.js の関数を呼び出し
+    display.innerHTML = renderComboIcons(combo);
+}
+
+init();
