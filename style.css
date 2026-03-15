@@ -1,1 +1,43 @@
+body{
+font-family:sans-serif;
+margin:20px;
+background:#f4f4f4;
+}
 
+header{
+display:flex;
+gap:10px;
+margin-bottom:10px;
+}
+
+#combo{
+min-height:60px;
+background:white;
+padding:10px;
+border:1px solid #ccc;
+font-size:20px;
+}
+
+.comboButtons{
+margin-top:10px;
+}
+
+button{
+margin:4px;
+padding:8px 12px;
+cursor:pointer;
+}
+
+.tabs{
+margin-top:20px;
+}
+
+#commandArea{
+margin-top:10px;
+}
+
+.moveBtn{
+font-size:16px;
+padding:10px;
+margin:5px;
+}
