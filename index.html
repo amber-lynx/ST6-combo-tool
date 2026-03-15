@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SF6 コンボ作成ツール</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<header>
+
+<select id="character">
+<option value="kimberly">Kimberly</option>
+</select>
+
+<button id="edit">編集</button>
+
+</header>
+
+<hr>
+
+<section id="comboSection">
+
+<h2>コンボルート</h2>
+
+<div id="combo"></div>
+
+<div class="comboButtons">
+<button onclick="undo()">一つ戻る</button>
+<button onclick="clearCombo()">削除</button>
+<button onclick="saveCombo()">保存</button>
+</div>
+
+</section>
+
+<hr>
+
+<nav class="tabs">
+
+<button onclick="changeTab('normal')">通常技</button>
+<button onclick="changeTab('crouch')">しゃがみ</button>
+<button onclick="changeTab('special')">必殺技</button>
+<button onclick="changeTab('sa')">SA</button>
+<button onclick="changeTab('system')">システム</button>
+
+</nav>
+
+<section id="commandArea"></section>
+
+<script src="app.js"></script>
+
+</body>
+</html>
