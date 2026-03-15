@@ -41,3 +41,19 @@ font-size:16px;
 padding:10px;
 margin:5px;
 }
+#savedCombos{
+margin-top:10px;
+background:white;
+padding:10px;
+border:1px solid #ccc;
+}
+
+.savedItem{
+padding:5px;
+border-bottom:1px solid #eee;
+cursor:pointer;
+}
+
+.savedItem:hover{
+background:#f0f0f0;
+}
