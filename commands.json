@@ -14,9 +14,22 @@
   {"cmd":"2HP","name":"しゃがみ強P"}
  ],
 
+ "unique":[
+  {"cmd":"6MP","name":"前中P"},
+  {"cmd":"6HK","name":"前強K"}
+ ],
+
  "special":[
   {"cmd":"236K","name":"疾駆け"},
   {"cmd":"214K","name":"武神旋風脚"}
+ ],
+
+ "follow":[
+  {"cmd":"P","name":"肘"}
+ ],
+
+ "sa":[
+  {"cmd":"236236P","name":"SA1"}
  ],
 
  "system":[
