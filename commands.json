@@ -1,1 +1,28 @@
+{
+ "normal":[
+  {"cmd":"LP","name":"弱P"},
+  {"cmd":"MP","name":"中P"},
+  {"cmd":"HP","name":"強P"},
+  {"cmd":"LK","name":"弱K"},
+  {"cmd":"MK","name":"中K"},
+  {"cmd":"HK","name":"強K"}
+ ],
 
+ "crouch":[
+  {"cmd":"2LP","name":"しゃがみ弱P"},
+  {"cmd":"2MP","name":"しゃがみ中P"},
+  {"cmd":"2HP","name":"しゃがみ強P"}
+ ],
+
+ "special":[
+  {"cmd":"236K","name":"疾駆け"},
+  {"cmd":"214K","name":"武神旋風脚"}
+ ],
+
+ "system":[
+  {"cmd":"DR","name":"ラッシュ"},
+  {"cmd":"DI","name":"インパクト"},
+  {"cmd":"66","name":"前ステ"},
+  {"cmd":"44","name":"後ステ"}
+ ]
+}
